@@ -4,7 +4,12 @@ import glsl from 'vite-plugin-glsl';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react(), glsl()],
+  plugins: [
+    react({
+      fastRefresh: false, // 禁用 React Fast Refresh 避免开发环境报错
+    }),
+    glsl(),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

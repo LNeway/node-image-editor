@@ -4,6 +4,7 @@
   "description": "Node Base Non-Destructive Image Editor",
   "type": "module",
   "scripts": {
+    "serve": "bash start.sh",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
