@@ -12,7 +12,8 @@
   "node": {
     "common": {
       "image": "Image",
-      "mask": "Mask"
+      "mask": "Mask",
+      "node": "Node"
     },
     "input": {
       "image_import": "Image Import",
@@ -88,6 +89,43 @@
   "panel": {
     "node_library": "Node Library",
     "properties": "Properties",
-    "history": "History"
+    "history": "History",
+    "preview": "Preview",
+    "search_nodes": "Search nodes...",
+    "no_results": "No matching nodes found",
+    "no_nodes": "No nodes available",
+    "categories": {
+      "input": "Input",
+      "adjust": "Adjust",
+      "filter": "Filter",
+      "transform": "Transform",
+      "composite": "Composite",
+      "channel": "Channel",
+      "mask": "Mask",
+      "text": "Text",
+      "output": "Output",
+      "utility": "Utility"
+    }
+  },
+  "properties": {
+    "select_node": "Select a node to view properties",
+    "preview": "Preview",
+    "no_preview": "No preview",
+    "inputs": "Input Ports",
+    "outputs": "Output Ports",
+    "params": "Parameters"
+  },
+  "preview": {
+    "placeholder": "Connect a preview output node to see results",
+    "full": "Original",
+    "size": "Size"
+  },
+  "context_menu": {
+    "add_node": "Add Node",
+    "copy": "Copy",
+    "paste": "Paste",
+    "delete": "Delete",
+    "group": "Group",
+    "ungroup": "Ungroup"
   }
 }

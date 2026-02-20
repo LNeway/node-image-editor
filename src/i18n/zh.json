@@ -12,7 +12,8 @@
   "node": {
     "common": {
       "image": "图像",
-      "mask": "蒙版"
+      "mask": "蒙版",
+      "node": "节点"
     },
     "input": {
       "image_import": "图片导入",
@@ -88,6 +89,43 @@
   "panel": {
     "node_library": "节点库",
     "properties": "属性",
-    "history": "历史记录"
+    "history": "历史记录",
+    "preview": "预览",
+    "search_nodes": "搜索节点...",
+    "no_results": "未找到匹配的节点",
+    "no_nodes": "暂无可用节点",
+    "categories": {
+      "input": "输入",
+      "adjust": "调整",
+      "filter": "滤镜",
+      "transform": "变换",
+      "composite": "合成",
+      "channel": "通道",
+      "mask": "蒙版",
+      "text": "文字",
+      "output": "输出",
+      "utility": "工具"
+    }
+  },
+  "properties": {
+    "select_node": "选择一个节点以查看属性",
+    "preview": "预览",
+    "no_preview": "无预览",
+    "inputs": "输入端口",
+    "outputs": "输出端口",
+    "params": "参数"
+  },
+  "preview": {
+    "placeholder": "连接预览输出节点查看效果",
+    "full": "原始",
+    "size": "尺寸"
+  },
+  "context_menu": {
+    "add_node": "添加节点",
+    "copy": "复制",
+    "paste": "粘贴",
+    "delete": "删除",
+    "group": "编组",
+    "ungroup": "解组"
   }
 }

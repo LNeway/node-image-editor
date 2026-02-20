@@ -35,6 +35,9 @@ const uiSlice = createSlice({
     toggleNodeLibrary: (state) => {
       state.isNodeLibraryOpen = !state.isNodeLibraryOpen;
     },
+    setSelectedNode: (state, action: PayloadAction<string | null>) => {
+      state.selectedNodeId = action.payload;
+    },
   },
 });
 
@@ -44,5 +47,6 @@ export const {
   togglePropertiesPanel,
   toggleHistoryPanel,
   toggleNodeLibrary,
+  setSelectedNode,
 } = uiSlice.actions;
 export default uiSlice.reducer;
