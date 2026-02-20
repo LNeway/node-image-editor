@@ -16,11 +16,15 @@
     },
     "input": {
       "image_import": "Image Import",
+      "image_import_description": "Import image from local file",
       "solid_color": "Solid Color",
       "noise_generator": "Noise Generator"
     },
     "adjust": {
       "brightness_contrast": "Brightness/Contrast",
+      "brightness_contrast_description": "Adjust image brightness and contrast",
+      "brightness": "Brightness",
+      "contrast": "Contrast",
       "levels": "Levels",
       "curves": "Curves",
       "hsl": "HSL Adjustment",
@@ -29,6 +33,7 @@
     },
     "filter": {
       "gaussian_blur": "Gaussian Blur",
+      "gaussian_blur_description": "Apply Gaussian blur effect",
       "sharpen": "Sharpen",
       "denoise": "Denoise",
       "stylize": "Stylize"
@@ -42,12 +47,42 @@
     },
     "composite": {
       "blend": "Blend",
-      "alpha_composite": "Alpha Composite",
-      "mask_composite": "Mask Composite"
+      "blend_description": "Blend two images using blend modes",
+      "base": "Base Image",
+      "blend": "Blend Image",
+      "opacity": "Opacity",
+      "mode": "Blend Mode",
+      "modes": {
+        "normal": "Normal",
+        "multiply": "Multiply",
+        "screen": "Screen",
+        "overlay": "Overlay",
+        "darken": "Darken",
+        "lighten": "Lighten",
+        "color_dodge": "Color Dodge",
+        "color_burn": "Color Burn",
+        "soft_light": "Soft Light",
+        "hard_light": "Hard Light",
+        "difference": "Difference",
+        "exclusion": "Exclusion"
+      }
     },
     "output": {
       "image_export": "Image Export",
-      "preview": "Preview"
+      "image_export_description": "Export image to file",
+      "preview": "Preview Output",
+      "preview_description": "Mark as preview window output"
+    },
+    "gaussian_blur": {
+      "radius": "Blur Radius"
+    },
+    "image_export": {
+      "format": "Format",
+      "quality": "Quality",
+      "file_name": "File Name"
+    },
+    "preview": {
+      "resolution": "Preview Resolution"
     }
   },
   "panel": {

@@ -16,11 +16,15 @@
     },
     "input": {
       "image_import": "图片导入",
+      "image_import_description": "从本地导入图片",
       "solid_color": "纯色填充",
       "noise_generator": "噪声生成"
     },
     "adjust": {
       "brightness_contrast": "亮度/对比度",
+      "brightness_contrast_description": "调整图像的亮度和对比度",
+      "brightness": "亮度",
+      "contrast": "对比度",
       "levels": "色阶",
       "curves": "曲线",
       "hsl": "HSL调整",
@@ -29,6 +33,7 @@
     },
     "filter": {
       "gaussian_blur": "高斯模糊",
+      "gaussian_blur_description": "应用高斯模糊效果",
       "sharpen": "锐化",
       "denoise": "降噪",
       "stylize": "风格化"
@@ -42,12 +47,42 @@
     },
     "composite": {
       "blend": "混合",
-      "alpha_composite": "Alpha合成",
-      "mask_composite": "蒙版合成"
+      "blend_description": "使用混合模式合成两张图像",
+      "base": "基础图像",
+      "blend": "混合图像",
+      "opacity": "不透明度",
+      "mode": "混合模式",
+      "modes": {
+        "normal": "正常",
+        "multiply": "正片叠底",
+        "screen": "滤色",
+        "overlay": "叠加",
+        "darken": "变暗",
+        "lighten": "变亮",
+        "color_dodge": "颜色减淡",
+        "color_burn": "颜色加深",
+        "soft_light": "柔光",
+        "hard_light": "强光",
+        "difference": "差值",
+        "exclusion": "排除"
+      }
     },
     "output": {
       "image_export": "图片导出",
-      "preview": "预览输出"
+      "image_export_description": "导出图像到文件",
+      "preview": "预览输出",
+      "preview_description": "标记为预览窗口显示"
+    },
+    "gaussian_blur": {
+      "radius": "模糊半径"
+    },
+    "image_export": {
+      "format": "格式",
+      "quality": "质量",
+      "file_name": "文件名"
+    },
+    "preview": {
+      "resolution": "预览分辨率"
     }
   },
   "panel": {
