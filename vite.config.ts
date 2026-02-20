@@ -5,14 +5,21 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [
-    react({
-      fastRefresh: false, // 禁用 React Fast Refresh 避免开发环境报错
-    }),
+    react(),
     glsl(),
   ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+    },
+  },
+  // Configure esbuild to disable React side effects for HMR
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'react',
+    // This should prevent the HMR issues
+    logOverride: {
+      'this-is-undefined-in-esm': 'silent',
     },
   },
   server: {
@@ -22,6 +29,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+  },
+  optimizeDeps: {
+    // Force include react to avoid issues
+    include: ['react', 'react-dom'],
   },
   test: {
     globals: true,
