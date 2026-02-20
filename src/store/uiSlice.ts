@@ -6,6 +6,9 @@ export interface UIState {
   isPropertiesPanelOpen: boolean;
   isHistoryPanelOpen: boolean;
   isNodeLibraryOpen: boolean;
+  // Preview state
+  previewTexture: any;
+  previewSize: { width: number; height: number };
 }
 
 const initialState: UIState = {
@@ -14,6 +17,8 @@ const initialState: UIState = {
   isPropertiesPanelOpen: true,
   isHistoryPanelOpen: false,
   isNodeLibraryOpen: true,
+  previewTexture: null,
+  previewSize: { width: 1920, height: 1080 },
 };
 
 const uiSlice = createSlice({
@@ -38,6 +43,12 @@ const uiSlice = createSlice({
     setSelectedNode: (state, action: PayloadAction<string | null>) => {
       state.selectedNodeId = action.payload;
     },
+    setPreviewTexture: (state, action: PayloadAction<any>) => {
+      state.previewTexture = action.payload;
+    },
+    setPreviewSize: (state, action: PayloadAction<{ width: number; height: number }>) => {
+      state.previewSize = action.payload;
+    },
   },
 });
 
@@ -48,5 +59,7 @@ export const {
   toggleHistoryPanel,
   toggleNodeLibrary,
   setSelectedNode,
+  setPreviewTexture,
+  setPreviewSize,
 } = uiSlice.actions;
 export default uiSlice.reducer;

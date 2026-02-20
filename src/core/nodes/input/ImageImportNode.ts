@@ -13,17 +13,31 @@ export const ImageImportNode: NodeTypeDefinition = {
   ],
 
   params: [
-    { key: 'filePath', label: 'node.image_import.file', type: 'text', default: '' },
+    { key: 'imageData', label: 'node.image_import.file', type: 'file', accept: 'image/*', default: '' },
   ],
 
-  execute: () => {
-    // Will be implemented with image codec in Phase 10
+  getOutputSize: (_inputs, params) => {
+    // Try to get size from image data if available
+    const imageData = params?.imageData;
+    if (imageData && typeof imageData === 'string' && imageData.startsWith('data:')) {
+      // We'll need to load the image to get dimensions
+      // For now, return a default size
+      return { width: 1920, height: 1080 };
+    }
+    return { width: 1920, height: 1080 };
+  },
+
+  execute: ({ params }) => {
+    const imageData = params?.imageData;
+    
+    // Return the image data for preview
     return {
       image: {
         type: 'image' as const,
-        texture: null,
-        width: 0,
-        height: 0,
+        texture: null, // Will be WebGL texture later
+        dataUrl: imageData || null, // Store data URL for preview
+        width: 1920,
+        height: 1080,
       },
     };
   },

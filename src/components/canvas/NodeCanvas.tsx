@@ -12,8 +12,6 @@ import ReactFlow, {
   BackgroundVariant,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useDispatch } from 'react-redux';
-import { setSelectedNode } from '../../store/uiSlice';
 import CustomNode from './CustomNode';
 import ContextMenu from './ContextMenu';
 
@@ -27,6 +25,8 @@ interface NodeCanvasProps {
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
+  onNodeClick?: (event: React.MouseEvent, node: Node) => void;
+  onPaneClick?: () => void;
 }
 
 export default function NodeCanvas({
@@ -35,20 +35,12 @@ export default function NodeCanvas({
   onNodesChange,
   onEdgesChange,
   onConnect,
+  onNodeClick,
+  onPaneClick,
 }: NodeCanvasProps) {
-  const dispatch = useDispatch();
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
-  const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
-    dispatch(setSelectedNode(node.id));
-  }, [dispatch]);
-
-  const onPaneClick = useCallback(() => {
-    dispatch(setSelectedNode(null));
-    setContextMenu(null);
-  }, [dispatch]);
-
-  const onNodeContextMenu = useCallback((event: React.MouseEvent) => {
+  const handleNodeContextMenu = useCallback((event: React.MouseEvent) => {
     event.preventDefault();
     setContextMenu({
       x: event.clientX,
@@ -56,7 +48,7 @@ export default function NodeCanvas({
     });
   }, []);
 
-  const onPaneContextMenu = useCallback((event: React.MouseEvent) => {
+  const handlePaneContextMenu = useCallback((event: React.MouseEvent) => {
     event.preventDefault();
     setContextMenu({
       x: event.clientX,
@@ -78,15 +70,17 @@ export default function NodeCanvas({
         onConnect={onConnect}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
-        onNodeContextMenu={onNodeContextMenu}
-        onPaneContextMenu={onPaneContextMenu}
+        onNodeContextMenu={handleNodeContextMenu}
+        onPaneContextMenu={handlePaneContextMenu}
         nodeTypes={nodeTypes}
-        fitView
+        defaultViewport={{ x: 0, y: 0, zoom: 0.75 }}
+        minZoom={0.1}
+        maxZoom={2}
         snapToGrid
         snapGrid={[15, 15]}
         style={{ height: '100%', width: '100%' }}
         defaultEdgeOptions={{
-          type: 'smoothstep',
+          type: 'bezier',
           animated: true,
           style: { stroke: '#00b894', strokeWidth: 2 },
         }}
@@ -99,9 +93,7 @@ export default function NodeCanvas({
           className="!bg-bg-secondary !border-border-color"
           nodeColor="#00b894"
           maskColor="rgba(0, 0, 0, 0.5)"
-          style={{
-            backgroundColor: '#2d2d2d',
-          }}
+          style={{ backgroundColor: '#2d2d2d' }}
         />
         <Background
           variant={BackgroundVariant.Dots}

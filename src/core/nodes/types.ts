@@ -18,12 +18,13 @@ export interface PortDefinition {
 export interface ParamDefinition {
   key: string;
   label: string;
-  type: 'slider' | 'select' | 'color' | 'checkbox' | 'number' | 'text';
+  type: 'slider' | 'select' | 'color' | 'checkbox' | 'number' | 'text' | 'file';
   min?: number;
   max?: number;
   step?: number;
   default: any;
   options?: { label: string; value: string }[];
+  accept?: string;
 }
 
 export interface NodeOutput {

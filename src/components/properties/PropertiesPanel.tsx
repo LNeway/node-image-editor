@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store';
+import { useDispatch } from 'react-redux';
 import { updateNode } from '../../store/graphSlice';
-import { useMemo } from 'react';
+import { Node } from 'reactflow';
 import { nodeRegistry } from '../../core/nodes/NodeRegistry';
 import SliderParam from './params/SliderParam';
 import SelectParam from './params/SelectParam';
@@ -10,30 +9,24 @@ import ColorParam from './params/ColorParam';
 import CheckboxParam from './params/CheckboxParam';
 import NumberParam from './params/NumberParam';
 import TextParam from './params/TextParam';
+import FileParam from './params/FileParam';
 
-export default function PropertiesPanel() {
+interface PropertiesPanelProps {
+  selectedNode?: Node;
+}
+
+export default function PropertiesPanel({ selectedNode }: PropertiesPanelProps) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  
-  const selectedNodeId = useSelector((state: RootState) => state.ui.selectedNodeId);
-  const nodes = useSelector((state: RootState) => state.graph.nodes);
 
-  // 获取选中的节点
-  const selectedNode = useMemo(() => {
-    return nodes.find((n) => n.id === selectedNodeId);
-  }, [nodes, selectedNodeId]);
-
-  // 获取节点定义
-  const nodeDef = useMemo(() => {
-    if (!selectedNode?.type) return null;
-    return nodeRegistry.get(selectedNode.type);
-  }, [selectedNode?.type]);
+  // 获取节点定义 - use nodeType field from data
+  const nodeDef = selectedNode?.data?.nodeType ? nodeRegistry.get(selectedNode.data.nodeType) : null;
 
   // 更新参数
   const handleParamChange = (key: string, value: any) => {
-    if (!selectedNodeId) return;
+    if (!selectedNode) return;
     dispatch(updateNode({
-      id: selectedNodeId,
+      id: selectedNode.id,
       data: { params: { ...selectedNode?.data?.params, [key]: value } },
     }));
   };
@@ -162,6 +155,15 @@ export default function PropertiesPanel() {
                 case 'text':
                   return (
                     <TextParam
+                      key={param.key}
+                      param={param}
+                      value={value}
+                      onChange={(v) => handleParamChange(param.key, v)}
+                    />
+                  );
+                case 'file':
+                  return (
+                    <FileParam
                       key={param.key}
                       param={param}
                       value={value}

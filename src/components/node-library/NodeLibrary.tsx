@@ -11,9 +11,9 @@ interface NodeLibraryProps {
 export default function NodeLibrary({ onAddNode }: NodeLibraryProps) {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set(['transform', 'channel', 'mask', 'text', 'utility']));
 
-  // 获取所有节点，按类别分组
+  // Get all nodes, grouped by category
   const nodesByCategory = useMemo(() => {
     const categories: Record<string, any[]> = {};
     
@@ -23,7 +23,7 @@ export default function NodeLibrary({ onAddNode }: NodeLibraryProps) {
         categories[category] = [];
       }
       
-      // 过滤搜索
+      // Filter by search
       const label = t(node.label);
       if (searchQuery && !label.toLowerCase().includes(searchQuery.toLowerCase())) {
         return;
@@ -35,7 +35,7 @@ export default function NodeLibrary({ onAddNode }: NodeLibraryProps) {
     return categories;
   }, [t, searchQuery]);
 
-  // 类别显示顺序
+  // Category display order
   const categoryOrder = ['input', 'adjust', 'filter', 'transform', 'composite', 'channel', 'mask', 'text', 'output', 'utility'];
 
   const toggleCategory = (category: string) => {
@@ -50,32 +50,26 @@ export default function NodeLibrary({ onAddNode }: NodeLibraryProps) {
     });
   };
 
-  // 类别翻译
-  const categoryLabels: Record<string, string> = {
-    input: t('panel.categories.input'),
-    adjust: t('panel.categories.adjust'),
-    filter: t('panel.categories.filter'),
-    transform: t('panel.categories.transform'),
-    composite: t('panel.categories.composite'),
-    channel: t('panel.categories.channel'),
-    mask: t('panel.categories.mask'),
-    text: t('panel.categories.text'),
-    output: t('panel.categories.output'),
-    utility: t('panel.categories.utility'),
+  // Get category label
+  const getCategoryLabel = (category: string): string => {
+    return t(`panel.categories.${category}`);
   };
 
   return (
-    <div className="w-64 bg-bg-secondary border-r border-border-color flex flex-col h-full">
-      {/* 标题 */}
-      <div className="p-4 border-b border-border-color">
-        <h2 className="text-lg font-semibold text-text-primary mb-3">
+    <aside 
+      className="w-64 bg-[#1a1a1a] border-r border-[#2a2a2a] flex flex-col h-full"
+      aria-label="Node library"
+    >
+      {/* Header */}
+      <header className="p-4 border-b border-[#2a2a2a]">
+        <h2 className="text-base font-semibold text-white mb-3">
           {t('panel.node_library')}
         </h2>
         <NodeSearch value={searchQuery} onChange={setSearchQuery} />
-      </div>
+      </header>
 
-      {/* 节点列表 */}
-      <div className="flex-1 overflow-y-auto p-2">
+      {/* Node List */}
+      <nav className="flex-1 overflow-y-auto p-2" role="list">
         {Object.entries(nodesByCategory)
           .sort(([a], [b]) => {
             const aIndex = categoryOrder.indexOf(a);
@@ -85,20 +79,21 @@ export default function NodeLibrary({ onAddNode }: NodeLibraryProps) {
           .map(([category, nodes]) => (
             <NodeCategory
               key={category}
-              name={categoryLabels[category] || category}
+              name={getCategoryLabel(category)}
               nodes={nodes}
               isCollapsed={collapsedCategories.has(category)}
               onToggle={() => toggleCategory(category)}
               onAddNode={onAddNode}
+              t={t}
             />
           ))}
         
         {Object.keys(nodesByCategory).length === 0 && (
-          <div className="text-center text-text-secondary py-8">
+          <div className="text-center text-[#666] py-8 text-sm">
             {searchQuery ? t('panel.no_results') : t('panel.no_nodes')}
           </div>
         )}
-      </div>
-    </div>
+      </nav>
+    </aside>
   );
 }

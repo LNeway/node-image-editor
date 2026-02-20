@@ -1,11 +1,11 @@
 import { memo, useCallback } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
-import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { setSelectedNode } from '../../store/uiSlice';
 
 interface CustomNodeData {
   label: string;
+  labelKey?: string;
   category: string;
   inputs?: Array<{ key: string; label: string; dataType: string }>;
   outputs?: Array<{ key: string; label: string; dataType: string }>;
@@ -23,7 +23,6 @@ const portColors: Record<string, string> = {
 };
 
 function CustomNode({ id, data, selected }: NodeProps<CustomNodeData>) {
-  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const handleClick = useCallback(() => {
@@ -45,7 +44,7 @@ function CustomNode({ id, data, selected }: NodeProps<CustomNodeData>) {
       {/* 节点标题 */}
       <div className="px-3 py-2 border-b border-border-color bg-bg-tertiary rounded-t-lg">
         <div className="text-sm font-semibold text-text-primary">
-          {t(data?.label || 'node.common.node')}
+          {data?.label || 'Node'}
         </div>
         <div className="text-xs text-text-secondary">
           {data?.category || 'unknown'}
@@ -69,7 +68,7 @@ function CustomNode({ id, data, selected }: NodeProps<CustomNodeData>) {
                   }}
                 />
                 <span className="ml-2 text-xs text-text-secondary">
-                  {t(input.label)}
+                  {input.label}
                 </span>
               </div>
             ))}
@@ -82,7 +81,7 @@ function CustomNode({ id, data, selected }: NodeProps<CustomNodeData>) {
             {outputs.map((output, index) => (
               <div key={`output-${index}`} className="flex items-center justify-end">
                 <span className="mr-2 text-xs text-text-secondary">
-                  {t(output.label)}
+                  {output.label}
                 </span>
                 <Handle
                   type="source"
