@@ -39,19 +39,34 @@ export default function AppLayout() {
     []
   );
 
-  // 连接处理
+  // 连接处理 - 使用 React Flow 的 addEdge 返回新边
   const onConnect: OnConnect = useCallback(
     (connection) => {
-      const newEdge = { ...connection, id: `${connection.source}-${connection.target}`, type: 'bezier', animated: true };
-      setRfEdges((eds) => addEdge(newEdge, eds));
-      
-      if (connection.source && connection.target) {
-        dispatch(addGraphEdge({
-          id: `${connection.source}-${connection.target}`,
-          source: connection.source,
-          target: connection.target,
+      // 使用 React Flow 的 addEdge 创建新边
+      setRfEdges((eds) => {
+        // 创建新边配置
+        const newEdge = {
+          ...connection,
+          id: `edge-${Date.now()}`,
+          type: 'bezier',
+          animated: true,
+          style: { stroke: '#00b894', strokeWidth: 2 },
           sourceHandle: connection.sourceHandle,
           targetHandle: connection.targetHandle,
+        };
+        
+        // 使用 addEdge 处理并返回新边列表
+        return addEdge(newEdge, eds);
+      });
+      
+      // 同时更新 Redux store
+      if (connection.source && connection.target) {
+        dispatch(addGraphEdge({
+          id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
+          source: connection.source,
+          target: connection.target,
+          sourceHandle: connection.sourceHandle || null,
+          targetHandle: connection.targetHandle || null,
         }));
       }
     },
