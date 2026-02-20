@@ -19,6 +19,7 @@
       "image_import": "图片导入",
       "image_import_description": "从本地导入图片",
       "solid_color": "纯色填充",
+      "solid_color_description": "生成纯色图像",
       "noise_generator": "噪声生成"
     },
     "adjust": {
@@ -27,23 +28,32 @@
       "brightness": "亮度",
       "contrast": "对比度",
       "levels": "色阶",
+      "levels_description": "调整图像的色阶",
       "curves": "曲线",
       "hsl": "HSL调整",
+      "hsl_description": "调整色相、饱和度和亮度",
       "color_balance": "色彩平衡",
+      "color_balance_description": "调整阴影、中间调和高光的颜色",
       "white_balance": "白平衡"
     },
     "filter": {
       "gaussian_blur": "高斯模糊",
       "gaussian_blur_description": "应用高斯模糊效果",
       "sharpen": "锐化",
+      "sharpen_description": "增强图像边缘",
       "denoise": "降噪",
+      "denoise_description": "减少图像噪点",
       "stylize": "风格化"
     },
     "transform": {
-      "crop": "裁剪",
       "resize": "缩放",
+      "resize_description": "调整图像尺寸",
+      "crop": "裁剪",
+      "crop_description": "裁剪图像区域",
       "rotate": "旋转",
+      "rotate_description": "旋转图像",
       "flip": "翻转",
+      "flip_description": "水平或垂直翻转图像",
       "perspective": "透视变换"
     },
     "composite": {
@@ -52,21 +62,7 @@
       "base": "基础图像",
       "blend": "混合图像",
       "opacity": "不透明度",
-      "mode": "混合模式",
-      "modes": {
-        "normal": "正常",
-        "multiply": "正片叠底",
-        "screen": "滤色",
-        "overlay": "叠加",
-        "darken": "变暗",
-        "lighten": "变亮",
-        "color_dodge": "颜色减淡",
-        "color_burn": "颜色加深",
-        "soft_light": "柔光",
-        "hard_light": "强光",
-        "difference": "差值",
-        "exclusion": "排除"
-      }
+      "mode": "混合模式"
     },
     "output": {
       "image_export": "图片导出",
@@ -84,6 +80,55 @@
     },
     "preview": {
       "resolution": "预览分辨率"
+    },
+    "solid_color": {
+      "color": "颜色",
+      "width": "宽度",
+      "height": "高度"
+    },
+    "levels": {
+      "black_point": "黑点",
+      "white_point": "白点",
+      "gamma": "伽马"
+    },
+    "hsl": {
+      "hue": "色相",
+      "saturation": "饱和度",
+      "lightness": "亮度"
+    },
+    "color_balance": {
+      "shadows_r": "阴影红",
+      "shadows_g": "阴影绿",
+      "shadows_b": "阴影蓝",
+      "midtones_r": "中间调红",
+      "midtones_g": "中间调绿",
+      "midtones_b": "中间调蓝",
+      "highlights_r": "高光红",
+      "highlights_g": "高光绿",
+      "highlights_b": "高光蓝"
+    },
+    "resize": {
+      "width": "宽度",
+      "height": "高度",
+      "fit": "适应方式",
+      "stretch": "拉伸",
+      "fit_mode": "适应",
+      "fill": "填充",
+      "crop": "裁剪填充"
+    },
+    "crop": {
+      "x": "X",
+      "y": "Y",
+      "width": "宽度",
+      "height": "高度"
+    },
+    "rotate": {
+      "angle": "角度",
+      "expand": "扩展画布"
+    },
+    "flip": {
+      "horizontal": "水平",
+      "vertical": "垂直"
     }
   },
   "panel": {

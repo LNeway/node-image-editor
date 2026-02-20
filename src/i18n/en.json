@@ -19,6 +19,7 @@
       "image_import": "Image Import",
       "image_import_description": "Import image from local file",
       "solid_color": "Solid Color",
+      "solid_color_description": "Generate solid color image",
       "noise_generator": "Noise Generator"
     },
     "adjust": {
@@ -27,23 +28,32 @@
       "brightness": "Brightness",
       "contrast": "Contrast",
       "levels": "Levels",
+      "levels_description": "Adjust image levels",
       "curves": "Curves",
       "hsl": "HSL Adjustment",
+      "hsl_description": "Adjust hue, saturation and lightness",
       "color_balance": "Color Balance",
+      "color_balance_description": "Adjust shadows, midtones and highlights",
       "white_balance": "White Balance"
     },
     "filter": {
       "gaussian_blur": "Gaussian Blur",
       "gaussian_blur_description": "Apply Gaussian blur effect",
       "sharpen": "Sharpen",
+      "sharpen_description": "Enhance image edges",
       "denoise": "Denoise",
+      "denoise_description": "Reduce image noise",
       "stylize": "Stylize"
     },
     "transform": {
-      "crop": "Crop",
       "resize": "Resize",
+      "resize_description": "Adjust image dimensions",
+      "crop": "Crop",
+      "crop_description": "Crop image area",
       "rotate": "Rotate",
+      "rotate_description": "Rotate image",
       "flip": "Flip",
+      "flip_description": "Flip image horizontally or vertically",
       "perspective": "Perspective"
     },
     "composite": {
@@ -52,21 +62,7 @@
       "base": "Base Image",
       "blend": "Blend Image",
       "opacity": "Opacity",
-      "mode": "Blend Mode",
-      "modes": {
-        "normal": "Normal",
-        "multiply": "Multiply",
-        "screen": "Screen",
-        "overlay": "Overlay",
-        "darken": "Darken",
-        "lighten": "Lighten",
-        "color_dodge": "Color Dodge",
-        "color_burn": "Color Burn",
-        "soft_light": "Soft Light",
-        "hard_light": "Hard Light",
-        "difference": "Difference",
-        "exclusion": "Exclusion"
-      }
+      "mode": "Blend Mode"
     },
     "output": {
       "image_export": "Image Export",
@@ -84,6 +80,55 @@
     },
     "preview": {
       "resolution": "Preview Resolution"
+    },
+    "solid_color": {
+      "color": "Color",
+      "width": "Width",
+      "height": "Height"
+    },
+    "levels": {
+      "black_point": "Black Point",
+      "white_point": "White Point",
+      "gamma": "Gamma"
+    },
+    "hsl": {
+      "hue": "Hue",
+      "saturation": "Saturation",
+      "lightness": "Lightness"
+    },
+    "color_balance": {
+      "shadows_r": "Shadows R",
+      "shadows_g": "Shadows G",
+      "shadows_b": "Shadows B",
+      "midtones_r": "Midtones R",
+      "midtones_g": "Midtones G",
+      "midtones_b": "Midtones B",
+      "highlights_r": "Highlights R",
+      "highlights_g": "Highlights G",
+      "highlights_b": "Highlights B"
+    },
+    "resize": {
+      "width": "Width",
+      "height": "Height",
+      "fit": "Fit Mode",
+      "stretch": "Stretch",
+      "fit_mode": "Fit",
+      "fill": "Fill",
+      "crop": "Crop"
+    },
+    "crop": {
+      "x": "X",
+      "y": "Y",
+      "width": "Width",
+      "height": "Height"
+    },
+    "rotate": {
+      "angle": "Angle",
+      "expand": "Expand Canvas"
+    },
+    "flip": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
     }
   },
   "panel": {

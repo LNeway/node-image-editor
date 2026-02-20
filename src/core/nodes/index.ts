@@ -1,29 +1,42 @@
 import { nodeRegistry } from './NodeRegistry';
 import { ImageImportNode } from './input/ImageImportNode';
+import { SolidColorNode } from './input/SolidColorNode';
 import { BrightnessContrastNode } from './adjust/BrightnessContrastNode';
+import { LevelsNode, HSLNode, ColorBalanceNode } from './adjust/MoreAdjustNodes';
 import { GaussianBlurNode } from './filter/GaussianBlurNode';
 import { BlendNode } from './composite/BlendNode';
 import { ImageExportNode } from './output/ImageExportNode';
 import { PreviewOutputNode } from './output/PreviewOutputNode';
+import { ResizeNode, CropNode, RotateNode, FlipNode } from './transform/TransformNodes';
 
 export type { NodeTypeDefinition, DataType, PortDefinition, ParamDefinition, NodeOutput } from './types';
 export type { ExecutionContext } from '../engine/ExecutionEngine';
 
-// 注册所有节点
+// Register all nodes
 function registerAllNodes() {
-  // 输入类
+  // Input nodes
   nodeRegistry.register(ImageImportNode);
+  nodeRegistry.register(SolidColorNode);
 
-  // 调整类
+  // Adjust nodes
   nodeRegistry.register(BrightnessContrastNode);
+  nodeRegistry.register(LevelsNode);
+  nodeRegistry.register(HSLNode);
+  nodeRegistry.register(ColorBalanceNode);
 
-  // 滤镜类
+  // Filter nodes
   nodeRegistry.register(GaussianBlurNode);
 
-  // 合成类
+  // Transform nodes
+  nodeRegistry.register(ResizeNode);
+  nodeRegistry.register(CropNode);
+  nodeRegistry.register(RotateNode);
+  nodeRegistry.register(FlipNode);
+
+  // Composite nodes
   nodeRegistry.register(BlendNode);
 
-  // 输出类
+  // Output nodes
   nodeRegistry.register(ImageExportNode);
   nodeRegistry.register(PreviewOutputNode);
 
