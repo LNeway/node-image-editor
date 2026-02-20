@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "Node图像编辑器"
+  },
+  "toolbar": {
+    "new": "新建",
+    "open": "打开",
+    "save": "保存",
+    "undo": "撤销",
+    "redo": "重做"
+  },
+  "node": {
+    "common": {
+      "image": "图像",
+      "mask": "蒙版"
+    },
+    "input": {
+      "image_import": "图片导入",
+      "solid_color": "纯色填充",
+      "noise_generator": "噪声生成"
+    },
+    "adjust": {
+      "brightness_contrast": "亮度/对比度",
+      "levels": "色阶",
+      "curves": "曲线",
+      "hsl": "HSL调整",
+      "color_balance": "色彩平衡",
+      "white_balance": "白平衡"
+    },
+    "filter": {
+      "gaussian_blur": "高斯模糊",
+      "sharpen": "锐化",
+      "denoise": "降噪",
+      "stylize": "风格化"
+    },
+    "transform": {
+      "crop": "裁剪",
+      "resize": "缩放",
+      "rotate": "旋转",
+      "flip": "翻转",
+      "perspective": "透视变换"
+    },
+    "composite": {
+      "blend": "混合",
+      "alpha_composite": "Alpha合成",
+      "mask_composite": "蒙版合成"
+    },
+    "output": {
+      "image_export": "图片导出",
+      "preview": "预览输出"
+    }
+  },
+  "panel": {
+    "node_library": "节点库",
+    "properties": "属性",
+    "history": "历史记录"
+  }
+}

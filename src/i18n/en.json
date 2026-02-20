@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "Node Image Editor"
+  },
+  "toolbar": {
+    "new": "New",
+    "open": "Open",
+    "save": "Save",
+    "undo": "Undo",
+    "redo": "Redo"
+  },
+  "node": {
+    "common": {
+      "image": "Image",
+      "mask": "Mask"
+    },
+    "input": {
+      "image_import": "Image Import",
+      "solid_color": "Solid Color",
+      "noise_generator": "Noise Generator"
+    },
+    "adjust": {
+      "brightness_contrast": "Brightness/Contrast",
+      "levels": "Levels",
+      "curves": "Curves",
+      "hsl": "HSL Adjustment",
+      "color_balance": "Color Balance",
+      "white_balance": "White Balance"
+    },
+    "filter": {
+      "gaussian_blur": "Gaussian Blur",
+      "sharpen": "Sharpen",
+      "denoise": "Denoise",
+      "stylize": "Stylize"
+    },
+    "transform": {
+      "crop": "Crop",
+      "resize": "Resize",
+      "rotate": "Rotate",
+      "flip": "Flip",
+      "perspective": "Perspective"
+    },
+    "composite": {
+      "blend": "Blend",
+      "alpha_composite": "Alpha Composite",
+      "mask_composite": "Mask Composite"
+    },
+    "output": {
+      "image_export": "Image Export",
+      "preview": "Preview"
+    }
+  },
+  "panel": {
+    "node_library": "Node Library",
+    "properties": "Properties",
+    "history": "History"
+  }
+}
