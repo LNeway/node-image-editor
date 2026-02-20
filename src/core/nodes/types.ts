@@ -1,25 +1,18 @@
 export type DataType = 'image' | 'mask' | 'number' | 'color' | 'bbox';
 
+export interface ExecutionContext {
+  nodeId: string;
+  inputs: Record<string, NodeOutput>;
+  params: Record<string, any>;
+  gpu: any;
+  outputSize: { width: number; height: number };
+}
+
 export interface PortDefinition {
   key: string;
   label: string;
   dataType: DataType;
   required?: boolean;
-}
-
-export interface NodeOutput {
-  type: 'image' | 'mask' | 'number' | 'color' | 'bbox';
-  texture?: WebGLTexture | null;
-  width?: number;
-  height?: number;
-  value?: number | { r: number; g: number; b: number; a: number } | { x: number; y: number; w: number; h: number };
-}
-
-export interface ExecutionContext {
-  inputs: Record<string, NodeOutput>;
-  params: Record<string, any>;
-  gpu: any;
-  outputSize: { width: number; height: number };
 }
 
 export interface ParamDefinition {
@@ -31,6 +24,14 @@ export interface ParamDefinition {
   step?: number;
   default: any;
   options?: { label: string; value: string }[];
+}
+
+export interface NodeOutput {
+  type: 'image' | 'mask' | 'number' | 'color' | 'bbox';
+  texture?: WebGLTexture | null;
+  width?: number;
+  height?: number;
+  value?: number | { r: number; g: number; b: number; a: number } | { x: number; y: number; w: number; h: number };
 }
 
 export interface NodeTypeDefinition {

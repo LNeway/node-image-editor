@@ -8,6 +8,7 @@ class NodeRegistry {
       console.warn(`Node type "${definition.type}" is already registered. Overwriting.`);
     }
     this.definitions.set(definition.type, definition);
+    console.log(`Registered node: ${definition.type}`);
   }
 
   get(type: string): NodeTypeDefinition | undefined {

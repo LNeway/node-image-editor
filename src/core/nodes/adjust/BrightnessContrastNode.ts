@@ -36,14 +36,48 @@ export const BrightnessContrastNode: NodeTypeDefinition = {
     },
   ],
 
-  execute: () => {
-    // Will be implemented with GPU context in Phase 1
+  getOutputSize: (inputs) => {
+    const imageInput = inputs.image;
+    if (imageInput && imageInput.width && imageInput.height) {
+      return { width: imageInput.width, height: imageInput.height };
+    }
+    return { width: 1920, height: 1080 };
+  },
+
+  execute: ({ inputs, params, gpu, outputSize }) => {
+    const imageInput = inputs.image;
+    
+    if (!imageInput || !imageInput.texture) {
+      // 没有输入图像，返回空输出
+      return {
+        image: {
+          type: 'image' as const,
+          texture: null,
+          width: outputSize.width,
+          height: outputSize.height,
+        },
+      };
+    }
+
+    // 使用 GPU 渲染
+    const uniforms: Record<string, any> = {
+      u_texture: imageInput.texture,
+      u_brightness: params.brightness ?? 0,
+      u_contrast: params.contrast ?? 1,
+    };
+
+    if (inputs.mask?.texture) {
+      uniforms.u_mask = inputs.mask.texture;
+    }
+
+    const outputTexture = gpu.renderShader('brightness_contrast', uniforms, outputSize);
+
     return {
       image: {
         type: 'image' as const,
-        texture: null,
-        width: 0,
-        height: 0,
+        texture: outputTexture,
+        width: outputSize.width,
+        height: outputSize.height,
       },
     };
   },

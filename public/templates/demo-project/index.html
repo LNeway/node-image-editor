@@ -5,233 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GPU Pipeline Demo - Node Image Editor</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #1e1e1e;
-      color: #ffffff;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    header {
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #3d3d3d;
-    }
-
-    h1 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      color: #b0b0b0;
-      font-size: 14px;
-    }
-
-    .main-content {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 24px;
-    }
-
-    .panel {
-      background: #2d2d2d;
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .panel-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: #b0b0b0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .control-group {
-      margin-bottom: 16px;
-    }
-
-    .control-label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 6px;
-      color: #b0b0b0;
-    }
-
-    input[type="file"] {
-      width: 100%;
-      padding: 8px;
-      background: #3d3d3d;
-      border: 1px solid #404040;
-      border-radius: 4px;
-      color: #fff;
-      font-size: 13px;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      height: 6px;
-      background: #3d3d3d;
-      border-radius: 3px;
-      outline: none;
-      -webkit-appearance: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      background: #00b894;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .value-display {
-      display: inline-block;
-      float: right;
-      color: #00b894;
-      font-size: 13px;
-    }
-
-    select {
-      width: 100%;
-      padding: 8px;
-      background: #3d3d3d;
-      border: 1px solid #404040;
-      border-radius: 4px;
-      color: #fff;
-      font-size: 13px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px 16px;
-      background: #00b894;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    button:hover {
-      background: #00a383;
-    }
-
-    button:disabled {
-      background: #3d3d3d;
-      color: #666;
-      cursor: not-allowed;
-    }
-
-    .canvas-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .canvas-wrapper {
-      position: relative;
-      background: #000;
-      border-radius: 8px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 400px;
-    }
-
-    canvas {
-      max-width: 100%;
-      max-height: 600px;
-    }
-
-    .canvas-label {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      color: #b0b0b0;
-    }
-
-    .canvas-placeholder {
-      color: #666;
-      font-size: 14px;
-    }
-
-    .info-bar {
-      display: flex;
-      gap: 16px;
-      padding: 12px;
-      background: #3d3d3d;
-      border-radius: 4px;
-      font-size: 12px;
-      color: #b0b0b0;
-    }
-
-    .info-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #666;
-    }
-
-    .status-dot.active {
-      background: #00b894;
-    }
-
-    .status-dot.error {
-      background: #e74c3c;
-    }
-
-    .divider {
-      height: 1px;
-      background: #3d3d3d;
-      margin: 16px 0;
-    }
-
-    @media (max-width: 900px) {
-      .main-content {
-        grid-template-columns: 1fr;
-      }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Inter, system-ui, -apple-system, sans-serif; background: #1e1e1e; color: #fff; min-height: 100vh; padding: 20px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #3d3d3d; }
+    h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    .subtitle { color: #b0b0b0; font-size: 14px; }
+    .main-content { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
+    .panel { background: #2d2d2d; border-radius: 8px; padding: 16px; }
+    .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: #b0b0b0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .control-group { margin-bottom: 16px; }
+    .control-label { display: block; font-size: 13px; margin-bottom: 6px; color: #b0b0b0; }
+    input[type="file"] { width: 100%; padding: 8px; background: #3d3d3d; border: 1px solid #404040; border-radius: 4px; color: #fff; font-size: 13px; }
+    input[type="range"] { width: 100%; height: 6px; background: #3d3d3d; border-radius: 3px; outline: none; -webkit-appearance: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #00b894; border-radius: 50%; cursor: pointer; }
+    .value-display { display: inline-block; float: right; color: #00b894; font-size: 13px; }
+    select { width: 100%; padding: 8px; background: #3d3d3d; border: 1px solid #404040; border-radius: 4px; color: #fff; font-size: 13px; }
+    button { width: 100%; padding: 10px 16px; background: #00b894; border: none; border-radius: 4px; color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #00a383; }
+    button:disabled { background: #3d3d3d; color: #666; cursor: not-allowed; }
+    button.secondary { background: #3d3d3d; }
+    button.secondary:hover { background: #4d4d4d; }
+    .canvas-container { display: flex; flex-direction: column; gap: 16px; }
+    .canvas-wrapper { position: relative; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; min-height: 400px; }
+    canvas { max-width: 100%; max-height: 600px; }
+    .canvas-label { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #b0b0b0; }
+    .placeholder { color: #666; font-size: 14px; }
+    .info-bar { display: flex; gap: 16px; padding: 12px; background: #3d3d3d; border-radius: 4px; font-size: 12px; color: #b0b0b0; flex-wrap: wrap; }
+    .info-item { display: flex; align-items: center; gap: 6px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
+    .status-dot.active { background: #00b894; }
+    .status-dot.error { background: #e74c3c; }
+    .divider { height: 1px; background: #3d3d3d; margin: 16px 0; }
+    .log-panel { background: #1a1a1a; border-radius: 4px; padding: 12px; font-family: monospace; font-size: 11px; max-height: 150px; overflow-y: auto; }
+    .log-entry { padding: 2px 0; color: #888; }
+    .log-entry.info { color: #4fc3f7; }
+    .log-entry.success { color: #81c784; }
+    .log-entry.error { color: #e57373; }
+    .node-preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+    .node-preview-item { background: #3d3d3d; border-radius: 4px; padding: 8px; text-align: center; font-size: 11px; }
+    .node-preview-item canvas { max-width: 100%; height: auto; }
+    @media (max-width: 900px) { .main-content { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>GPU Pipeline Demo</h1>
-      <p class="subtitle">Phase 1 - Core Types + GPU Pipeline Test</p>
+      <h1>GPU Pipeline Demo - Phase 2</h1>
+      <p class="subtitle">Redux Store + Execution Engine Test</p>
     </header>
 
     <div class="main-content">
-      <!-- Control Panel -->
       <div class="panel">
         <div class="panel-title">Controls</div>
 
@@ -243,47 +67,36 @@
         <div class="divider"></div>
 
         <div class="control-group">
-          <label class="control-label">2. Select Effect</label>
-          <select id="effectSelect">
-            <option value="passthrough">Passthrough (No Effect)</option>
-            <option value="brightness_contrast">Brightness/Contrast</option>
-            <option value="gaussian_blur">Gaussian Blur</option>
-            <option value="invert">Invert Colors</option>
-            <option value="grayscale">Grayscale</option>
-            <option value="sepia">Sepia</option>
-          </select>
+          <label class="control-label">2. Add Node</label>
+          <button id="addNodeBtn" class="secondary">+ Add Brightness/Contrast Node</button>
         </div>
 
-        <!-- Brightness/Contrast Controls -->
-        <div class="control-group effect-control" id="bcControls" style="display: none;">
-          <label class="control-label">
-            Brightness
-            <span class="value-display" id="brightnessValue">0</span>
-          </label>
-          <input type="range" id="brightness" min="-1" max="1" step="0.01" value="0">
-        </div>
-
-        <div class="control-group effect-control" id="bcControls2" style="display: none;">
-          <label class="control-label">
-            Contrast
-            <span class="value-display" id="contrastValue">1</span>
-          </label>
-          <input type="range" id="contrast" min="0" max="3" step="0.01" value="1">
-        </div>
-
-        <!-- Blur Controls -->
-        <div class="control-group effect-control" id="blurControls" style="display: none;">
-          <label class="control-label">
-            Blur Radius
-            <span class="value-display" id="blurValue">5</span>
-          </label>
-          <input type="range" id="blurRadius" min="0" max="20" step="0.5" value="5">
+        <div class="control-group">
+          <label class="control-label">3. Adjust Parameters</label>
+          <div id="nodeControls" style="display: none;">
+            <div class="control-group">
+              <label class="control-label">
+                Brightness <span class="value-display" id="brightnessValue">0</span>
+              </label>
+              <input type="range" id="brightness" min="-1" max="1" step="0.01" value="0">
+            </div>
+            <div class="control-group">
+              <label class="control-label">
+                Contrast <span class="value-display" id="contrastValue">1</span>
+              </label>
+              <input type="range" id="contrast" min="0" max="3" step="0.01" value="1">
+            </div>
+          </div>
         </div>
 
         <div class="divider"></div>
 
         <div class="control-group">
-          <button id="exportBtn" disabled>Export Image</button>
+          <button id="executeBtn" disabled>Execute Pipeline</button>
+        </div>
+
+        <div class="control-group">
+          <button id="exportBtn" disabled>Export Result</button>
         </div>
 
         <div class="divider"></div>
@@ -294,17 +107,24 @@
             <span>WebGL2</span>
           </div>
           <div class="info-item">
-            <span>Texture Pool: <span id="poolSize">0</span>/30</span>
+            <span>Nodes: <span id="nodeCount">0</span></span>
+          </div>
+          <div class="info-item">
+            <span>Pool: <span id="poolSize">0</span>/30</span>
           </div>
         </div>
+
+        <div class="divider"></div>
+
+        <div class="panel-title">Execution Log</div>
+        <div class="log-panel" id="logPanel"></div>
       </div>
 
-      <!-- Canvas Display -->
       <div class="canvas-container">
         <div class="canvas-wrapper">
           <span class="canvas-label">Output Preview</span>
           <canvas id="outputCanvas"></canvas>
-          <div class="canvas-placeholder" id="placeholder">Upload an image to start</div>
+          <div class="placeholder" id="placeholder">Upload an image to start</div>
         </div>
       </div>
     </div>
@@ -313,41 +133,38 @@
   <script type="module">
     // Import GPU components
     import { GPUContext, createGPUContext } from '../../src/core/gpu/index.js';
+    import { ExecutionEngine, getExecutionEngine } from '../../src/core/engine/ExecutionEngine.js';
+    import { nodeRegistry } from '../../src/core/nodes/NodeRegistry.js';
+    import { BrightnessContrastNode } from '../../src/core/nodes/adjust/BrightnessContrastNode.js';
 
-    // Shader sources
+    // Vertex Shader
     const vertexShader = `#version 300 es
 precision highp float;
-
 in vec2 a_position;
 in vec2 a_texcoord;
-
 out vec2 vUv;
-
 void main() {
   vUv = a_texcoord;
   gl_Position = vec4(a_position, 0.0, 1.0);
 }`;
 
+    // Fragment Shaders
     const passthroughShader = `#version 300 es
 precision highp float;
-
 uniform sampler2D u_texture;
 in vec2 vUv;
 out vec4 fragColor;
-
 void main() {
   fragColor = texture(u_texture, vUv);
 }`;
 
     const brightnessContrastShader = `#version 300 es
 precision highp float;
-
 uniform sampler2D u_texture;
 uniform float u_brightness;
 uniform float u_contrast;
 in vec2 vUv;
 out vec4 fragColor;
-
 void main() {
   vec4 color = texture(u_texture, vUv);
   color.rgb += u_brightness;
@@ -355,111 +172,73 @@ void main() {
   fragColor = clamp(color, 0.0, 1.0);
 }`;
 
-    const gaussianBlurShader = `#version 300 es
-precision highp float;
-
-uniform sampler2D u_texture;
-uniform vec2 u_resolution;
-uniform float u_radius;
-in vec2 vUv;
-out vec4 fragColor;
-
-void main() {
-  vec2 texelSize = 1.0 / u_resolution;
-  vec4 color = vec4(0.0);
-  float total = 0.0;
-
-  // Simple 9-tap Gaussian blur
-  for (float x = -4.0; x <= 4.0; x += 1.0) {
-    for (float y = -4.0; y <= 4.0; y += 1.0) {
-      if (abs(x) > u_radius || abs(y) > u_radius) continue;
-      float weight = exp(-(x*x + y*y) / (2.0 * u_radius * u_radius));
-      vec2 offset = vec2(x, y) * texelSize * u_radius;
-      color += texture(u_texture, vUv + offset) * weight;
-      total += weight;
-    }
-  }
-
-  fragColor = color / total;
-}`;
-
-    const invertShader = `#version 300 es
-precision highp float;
-
-uniform sampler2D u_texture;
-in vec2 vUv;
-out vec4 fragColor;
-
-void main() {
-  vec4 color = texture(u_texture, vUv);
-  fragColor = vec4(1.0 - color.rgb, color.a);
-}`;
-
-    const grayscaleShader = `#version 300 es
-precision highp float;
-
-uniform sampler2D u_texture;
-in vec2 vUv;
-out vec4 fragColor;
-
-void main() {
-  vec4 color = texture(u_texture, vUv);
-  float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-  fragColor = vec4(vec3(gray), color.a);
-}`;
-
-    const sepiaShader = `#version 300 es
-precision highp float;
-
-uniform sampler2D u_texture;
-in vec2 vUv;
-out vec4 fragColor;
-
-void main() {
-  vec4 color = texture(u_texture, vUv);
-  float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-  vec3 sepia = vec3(
-    gray * 1.2,
-    gray * 1.0,
-    gray * 0.8
-  );
-  fragColor = vec4(sepia, color.a);
-}`;
-
     // State
     let gpuContext = null;
+    let executionEngine = null;
     let inputTexture = null;
     let outputTexture = null;
-    let currentEffect = 'passthrough';
     let imageWidth = 0;
     let imageHeight = 0;
+    let nodeId = null;
+    let params = { brightness: 0, contrast: 1 };
 
     // DOM elements
     const imageInput = document.getElementById('imageInput');
-    const effectSelect = document.getElementById('effectSelect');
+    const addNodeBtn = document.getElementById('addNodeBtn');
+    const nodeControls = document.getElementById('nodeControls');
+    const executeBtn = document.getElementById('executeBtn');
+    const exportBtn = document.getElementById('exportBtn');
     const outputCanvas = document.getElementById('outputCanvas');
     const placeholder = document.getElementById('placeholder');
-    const exportBtn = document.getElementById('exportBtn');
     const webglStatus = document.getElementById('webglStatus');
+    const nodeCount = document.getElementById('nodeCount');
     const poolSizeEl = document.getElementById('poolSize');
+    const logPanel = document.getElementById('logPanel');
 
-    // Initialize WebGL
-    function initWebGL() {
+    // Logging
+    function log(msg, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logPanel.appendChild(entry);
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+
+    // Initialize
+    function init() {
       try {
-        gpuContext = createGPUContext(outputCanvas, { texturePoolLimit: 30 });
-
-        // Create shader programs
+        // Create GPU Context
+        gpuContext = createGPUContext(outputCanvas);
+        
+        // Register shaders
         gpuContext.createProgram('passthrough', vertexShader, passthroughShader);
         gpuContext.createProgram('brightness_contrast', vertexShader, brightnessContrastShader);
-        gpuContext.createProgram('gaussian_blur', vertexShader, gaussianBlurShader);
-        gpuContext.createProgram('invert', vertexShader, invertShader);
-        gpuContext.createProgram('grayscale', vertexShader, grayscaleShader);
-        gpuContext.createProgram('sepia', vertexShader, sepiaShader);
+        
+        // Register node
+        nodeRegistry.register(BrightnessContrastNode);
+        
+        // Initialize execution engine
+        executionEngine = getExecutionEngine();
+        executionEngine.setGPUContext(gpuContext);
+
+        // Listen for execution results
+        executionEngine.onExecute((results) => {
+          log(`Executed ${results.length} node(s)`, 'success');
+          results.forEach(r => {
+            if (r.error) {
+              log(`  ${r.nodeId}: ${r.error}`, 'error');
+            }
+          });
+        });
 
         webglStatus.classList.add('active');
+        log('GPU Context initialized', 'success');
+        log('Execution Engine ready', 'success');
+        
         return true;
       } catch (e) {
-        console.error('WebGL init failed:', e);
+        console.error('Init failed:', e);
+        log(`Init failed: ${e.message}`, 'error');
         webglStatus.classList.add('error');
         return false;
       }
@@ -475,36 +254,30 @@ void main() {
       });
     }
 
-    // Render
-    function render() {
-      if (!gpuContext || !inputTexture) return;
+    // Execute pipeline
+    function executePipeline() {
+      if (!executionEngine || !inputTexture || !nodeId) return;
 
-      const width = imageWidth;
-      const height = imageHeight;
+      const nodes = [{
+        id: nodeId,
+        type: 'brightness_contrast',
+        position: { x: 100, y: 100 },
+        data: params
+      }];
 
-      outputCanvas.width = width;
-      outputCanvas.height = height;
+      const edges = [];
 
-      let uniforms = {
-        u_texture: inputTexture
-      };
+      executionEngine.setGraph(nodes, edges);
+      executionEngine.markAllDirty();
 
-      // Effect-specific uniforms
-      if (currentEffect === 'brightness_contrast') {
-        uniforms.u_brightness = parseFloat(document.getElementById('brightness').value);
-        uniforms.u_contrast = parseFloat(document.getElementById('contrast').value);
-      } else if (currentEffect === 'gaussian_blur') {
-        uniforms.u_resolution = [width, height];
-        uniforms.u_radius = parseFloat(document.getElementById('blurRadius').value);
+      // Get result
+      const result = executionEngine.getNodeResult(nodeId);
+      if (result?.image?.texture) {
+        outputTexture = result.image.texture;
+        gpuContext.copyToCanvas(outputTexture, outputCanvas);
+        log('Pipeline executed successfully', 'success');
       }
 
-      // Render
-      outputTexture = gpuContext.renderShader(currentEffect, uniforms, { width, height });
-
-      // Copy to canvas
-      gpuContext.copyToCanvas(outputTexture, outputCanvas);
-
-      // Update pool size display
       poolSizeEl.textContent = gpuContext.textureManager.getPoolSize();
     }
 
@@ -517,74 +290,69 @@ void main() {
         placeholder.style.display = 'none';
         const img = await loadImage(file);
 
-        if (!gpuContext && !initWebGL()) return;
+        if (!gpuContext && !init()) return;
 
         imageWidth = img.width;
         imageHeight = img.height;
+        outputCanvas.width = imageWidth;
+        outputCanvas.height = imageHeight;
 
         // Upload to GPU
         inputTexture = gpuContext.uploadTexture(img, { name: 'input' });
 
-        render();
+        // Display input
+        gpuContext.copyToCanvas(inputTexture, outputCanvas);
+
+        log(`Image loaded: ${img.width}x${img.height}`, 'success');
+        executeBtn.disabled = false;
         exportBtn.disabled = false;
+        addNodeBtn.disabled = false;
 
-        console.log('Image loaded:', img.width, 'x', img.height);
+        poolSizeEl.textContent = gpuContext.textureManager.getPoolSize();
       } catch (e) {
-        console.error('Failed to load image:', e);
-        placeholder.textContent = 'Failed to load image';
-        placeholder.style.display = 'block';
+        log(`Failed to load image: ${e.message}`, 'error');
       }
     });
 
-    effectSelect.addEventListener('change', (e) => {
-      currentEffect = e.target.value;
-
-      // Show/hide effect controls
-      document.querySelectorAll('.effect-control').forEach(el => {
-        el.style.display = 'none';
-      });
-
-      if (currentEffect === 'brightness_contrast') {
-        document.getElementById('bcControls').style.display = 'block';
-        document.getElementById('bcControls2').style.display = 'block';
-      } else if (currentEffect === 'gaussian_blur') {
-        document.getElementById('blurControls').style.display = 'block';
-      }
-
-      if (inputTexture) render();
+    addNodeBtn.addEventListener('click', () => {
+      nodeId = 'node_' + Date.now();
+      nodeControls.style.display = 'block';
+      addNodeBtn.disabled = true;
+      nodeCount.textContent = '1';
+      log('Added Brightness/Contrast node', 'info');
     });
 
-    // Slider handlers
-    ['brightness', 'contrast', 'blurRadius'].forEach(id => {
+    // Parameter sliders
+    ['brightness', 'contrast'].forEach(id => {
       const el = document.getElementById(id);
       const display = document.getElementById(id + 'Value');
       el.addEventListener('input', () => {
         display.textContent = el.value;
-        if (inputTexture) render();
+        params[id] = parseFloat(el.value);
       });
     });
 
-    // Export
+    executeBtn.addEventListener('click', executePipeline);
+
     exportBtn.addEventListener('click', async () => {
       if (!outputTexture) return;
 
       try {
         const blob = await gpuContext.exportToBlob(outputTexture, 'png');
         const url = URL.createObjectURL(blob);
-
         const a = document.createElement('a');
         a.href = url;
-        a.download = `output_${currentEffect}.png`;
+        a.download = 'output.png';
         a.click();
-
         URL.revokeObjectURL(url);
+        log('Image exported', 'success');
       } catch (e) {
-        console.error('Export failed:', e);
+        log(`Export failed: ${e.message}`, 'error');
       }
     });
 
-    // Initial WebGL check
-    initWebGL();
+    // Start
+    init();
   </script>
 </body>
 </html>
