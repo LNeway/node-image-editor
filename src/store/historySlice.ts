@@ -27,9 +27,22 @@ const historySlice = createSlice({
   initialState,
   reducers: {
     pushHistory: (state, action: PayloadAction<Omit<HistoryEntry, 'id' | 'timestamp'>>) => {
+      // Fallback for crypto.randomUUID in case it's not available
+      const generateId = () => {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return crypto.randomUUID();
+        }
+        // Fallback: generate UUID-like string
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      };
+      
       const entry: HistoryEntry = {
         ...action.payload,
-        id: crypto.randomUUID(),
+        id: generateId(),
         timestamp: Date.now(),
       };
       // Remove future states when new action is performed

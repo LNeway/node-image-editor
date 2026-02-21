@@ -16,7 +16,7 @@ export default function AppLayout() {
   const { t } = useTranslation();
   
   // React Flow state
-  // 演示数据：预设置两个连接的节点（带示例图片）
+  // 演示数据：预设置两个连接的节点（无默认图片）
   const [rfNodes, setRfNodes] = useState<Node[]>([
     {
       id: 'image_import-demo',
@@ -29,9 +29,7 @@ export default function AppLayout() {
         inputs: [],
         outputs: [{ name: 'image', type: 'image' }],
         nodeType: 'image_import',
-        params: {
-          imageData: '/screenshot.png',
-        },
+        params: {},
       },
     },
     {
@@ -64,8 +62,8 @@ export default function AppLayout() {
   ]);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
-  // Execution manager
-  useExecutionManager();
+  // Execution manager - 传递节点和边数据
+  useExecutionManager(rfNodes, rfEdges);
 
   // 节点变化处理
   const onNodesChange: OnNodesChange = useCallback(

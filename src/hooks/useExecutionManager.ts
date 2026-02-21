@@ -1,15 +1,16 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setPreviewTexture, setPreviewSize } from '../store/uiSlice';
-import { RootState } from '../store';
 
 /**
  * ExecutionManager - 自动检测图片导入节点并显示预览
  */
-export function useExecutionManager() {
+export function useExecutionManager(nodes: any[] = [], edges: any[] = []) {
   const dispatch = useDispatch();
-  const graphNodes = useSelector((state: RootState) => state.graph.nodes);
-  const graphEdges = useSelector((state: RootState) => state.graph.edges);
+  
+  // 直接从 props 接收节点数据，而不是从 Redux 读取
+  const graphNodes = nodes;
+  const graphEdges = edges;
 
   // Execute when nodes change - find any image_import node with image data
   useEffect(() => {
