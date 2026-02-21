@@ -26,15 +26,30 @@ export const SolidColorNode: NodeTypeDefinition = {
   },
 
   execute: ({ params, outputSize }) => {
-    // For now, return a placeholder - will be implemented with GPU
+    const color = params?.color || { r: 0.5, g: 0.5, b: 0.5, a: 1 };
+    const { width, height } = outputSize;
+    
+    // 生成 dataUrl 用于预览
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const r = Math.round(color.r * 255);
+      const g = Math.round(color.g * 255);
+      const b = Math.round(color.b * 255);
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${color.a})`;
+      ctx.fillRect(0, 0, width, height);
+    }
+    const dataUrl = canvas.toDataURL('image/png');
+    
     return {
       image: {
         type: 'image' as const,
         texture: null,
-        dataUrl: null,
-        color: params?.color || { r: 0.5, g: 0.5, b: 0.5, a: 1 },
-        width: outputSize.width,
-        height: outputSize.height,
+        dataUrl,
+        width,
+        height,
       },
     };
   },

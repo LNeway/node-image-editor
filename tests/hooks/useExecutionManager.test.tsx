@@ -42,7 +42,7 @@ describe('useExecutionManager - 数据驱动模式', () => {
     expect(state.ui.previewTexture).toBeNull();
   });
 
-  it('应该在有图片导入节点且有 imageData 时设置预览', () => {
+  it('应该在有图片导入节点且有 imageData 且连接到预览节点时设置预览', () => {
     const testImageData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
     const store = createTestStore({
@@ -57,8 +57,23 @@ describe('useExecutionManager - 数据驱动模式', () => {
               },
             },
           },
+          {
+            id: 'preview_output-1',
+            data: {
+              nodeType: 'preview_output',
+              params: {},
+            },
+          },
         ],
-        edges: [],
+        edges: [
+          {
+            id: 'edge-1',
+            source: 'image_import-1',
+            target: 'preview_output-1',
+            sourceHandle: 'image',
+            targetHandle: 'image',
+          },
+        ],
       },
       ui: { selectedNodeId: null, previewTexture: null, previewSize: { width: 1920, height: 1080 } }
     });
@@ -73,7 +88,7 @@ describe('useExecutionManager - 数据驱动模式', () => {
     expect(state.ui.previewTexture).toBe(testImageData);
   });
 
-  it('应该忽略非图片导入节点', () => {
+  it('应该忽略非图片导入节点（当未连接到预览节点时）', () => {
     const testImageData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
     const store = createTestStore({
@@ -88,8 +103,21 @@ describe('useExecutionManager - 数据驱动模式', () => {
               },
             },
           },
+          {
+            id: 'preview_output-1',
+            data: {
+              nodeType: 'preview_output',
+              params: {},
+            },
+          },
         ],
-        edges: [],
+        edges: [
+          {
+            id: 'edge-1',
+            source: 'blur-1',
+            target: 'preview_output-1',
+          },
+        ],
       },
       ui: { selectedNodeId: null, previewTexture: null, previewSize: { width: 1920, height: 1080 } }
     });
@@ -100,7 +128,7 @@ describe('useExecutionManager - 数据驱动模式', () => {
     );
 
     const state = store.getState();
-    // 应该保持 null，因为不是 image_import 节点
+    // 应该保持 null，因为 gaussian_blur 不直接输出 dataUrl
     expect(state.ui.previewTexture).toBeNull();
   });
 
@@ -115,8 +143,21 @@ describe('useExecutionManager - 数据驱动模式', () => {
               params: {},
             },
           },
+          {
+            id: 'preview_output-1',
+            data: {
+              nodeType: 'preview_output',
+              params: {},
+            },
+          },
         ],
-        edges: [],
+        edges: [
+          {
+            id: 'edge-1',
+            source: 'image_import-1',
+            target: 'preview_output-1',
+          },
+        ],
       },
       ui: { selectedNodeId: null, previewTexture: 'some-data', previewSize: { width: 1920, height: 1080 } }
     });
