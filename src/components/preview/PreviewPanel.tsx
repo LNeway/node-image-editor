@@ -34,13 +34,16 @@ export default function PreviewPanel() {
     }
   }, [position.x]);
 
-  // Show panel when there's an image
+  // Show panel when there's an image - for demo, always show
   useEffect(() => {
+    // 演示模式：始终显示预览面板
+    setIsVisible(true);
+    
+    // 原有逻辑保留用于实际场景
     if (previewTexture && typeof previewTexture === 'string' && previewTexture.startsWith('data:')) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-      setIsMinimized(false);
+      // 有图片时正常显示
+    } else if (!previewTexture) {
+      // 无图片时也显示（演示模式）
     }
   }, [previewTexture]);
 

@@ -16,8 +16,52 @@ export default function AppLayout() {
   const { t } = useTranslation();
   
   // React Flow state
-  const [rfNodes, setRfNodes] = useState<Node[]>([]);
-  const [rfEdges, setRfEdges] = useState<Edge[]>([]);
+  // 演示数据：预设置两个连接的节点（带示例图片）
+  const [rfNodes, setRfNodes] = useState<Node[]>([
+    {
+      id: 'image_import-demo',
+      type: 'custom',
+      position: { x: 50, y: 150 },
+      data: {
+        label: '图片导入',
+        labelKey: 'node.image_import',
+        category: '输入',
+        inputs: [],
+        outputs: [{ name: 'image', type: 'image' }],
+        nodeType: 'image_import',
+        params: {
+          imageData: '/screenshot.png',
+        },
+      },
+    },
+    {
+      id: 'preview_output-demo',
+      type: 'custom',
+      position: { x: 500, y: 150 },
+      data: {
+        label: '预览输出',
+        labelKey: 'node.preview_output',
+        category: '输出',
+        inputs: [{ name: 'image', type: 'image' }],
+        outputs: [],
+        nodeType: 'preview_output',
+        params: {},
+      },
+    },
+  ]);
+  
+  const [rfEdges, setRfEdges] = useState<Edge[]>([
+    {
+      id: 'edge-demo-1',
+      source: 'image_import-demo',
+      target: 'preview_output-demo',
+      sourceHandle: 'image',
+      targetHandle: 'image',
+      type: 'bezier',
+      animated: true,
+      style: { stroke: '#00b894', strokeWidth: 2 },
+    },
+  ]);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   // Execution manager
@@ -91,13 +135,31 @@ export default function AppLayout() {
     const nodeDef = nodeRegistry.get(nodeType);
     if (!nodeDef) return;
 
+    // 根据节点类型设置不同的默认位置
+    const nodePositions: Record<string, { x: number; y: number }> = {
+      image_import: { x: 100, y: 200 },
+      gaussian_blur: { x: 450, y: 200 },
+      preview_output: { x: 800, y: 200 },
+      // 其他节点的默认位置
+      brightness_contrast: { x: 450, y: 200 },
+      color_balance: { x: 450, y: 350 },
+      hsl_adjust: { x: 450, y: 350 },
+      levels: { x: 450, y: 350 },
+      solid_color: { x: 100, y: 350 },
+      flip: { x: 450, y: 200 },
+      rotate: { x: 450, y: 200 },
+      scale: { x: 450, y: 200 },
+      crop: { x: 450, y: 200 },
+      blend: { x: 450, y: 200 },
+      image_export: { x: 800, y: 200 },
+    };
+    
+    const defaultPos = nodePositions[nodeType] || { x: 100 + (rfNodes.length * 300), y: 200 };
+    
     const newNode: Node = {
       id: `${nodeType}-${Date.now()}`,
       type: 'custom',
-      position: {
-        x: 100 + (Math.random() * 200),
-        y: 100 + (rfNodes.length * 120),
-      },
+      position: defaultPos,
       data: {
         label: t(nodeDef.label),
         labelKey: nodeDef.label,

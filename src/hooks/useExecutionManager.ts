@@ -18,25 +18,57 @@ export function useExecutionManager() {
       const nodeType = (node.data as any)?.nodeType;
       if (nodeType === 'image_import') {
         const params = (node.data as any)?.params || {};
-        const imageData = params.imageData;
+        let imageData = params.imageData;
         
-        if (imageData && typeof imageData === 'string' && imageData.startsWith('data:')) {
+        // 如果是相对路径，转换为完整路径
+        if (imageData && typeof imageData === 'string' && !imageData.startsWith('data:') && !imageData.startsWith('http')) {
+          imageData = imageData;
+        }
+        
+        if (imageData && typeof imageData === 'string' && (imageData.startsWith('data:') || imageData.startsWith('/'))) {
           console.log('[Execution] Found image_import node with data, updating preview');
           
-          // Load image to get dimensions
-          const img = new Image();
-          img.onload = () => {
-            dispatch(setPreviewSize({ width: img.width, height: img.height }));
+          // 如果是路径，先加载为 base64
+          const loadImage = (src: string) => {
+            // 尝试直接使用
+            if (src.startsWith('data:')) {
+              dispatch(setPreviewTexture(src));
+              const img = new Image();
+              img.onload = () => {
+                dispatch(setPreviewSize({ width: img.width, height: img.height }));
+              };
+              img.src = src;
+              return;
+            }
+            
+            // 路径需要通过 fetch 加载
+            fetch(src)
+              .then(r => r.blob())
+              .then(blob => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const dataUrl = reader.result as string;
+                  dispatch(setPreviewTexture(dataUrl));
+                  const img = new Image();
+                  img.onload = () => {
+                    dispatch(setPreviewSize({ width: img.width, height: img.height }));
+                  };
+                  img.src = dataUrl;
+                };
+                reader.readAsDataURL(blob);
+              })
+              .catch(() => {
+                console.log('[Execution] Failed to load image:', src);
+              });
           };
-          img.src = imageData;
           
-          dispatch(setPreviewTexture(imageData));
+          loadImage(imageData);
           return;
         }
       }
     }
     
-    // No image found - clear preview
-    dispatch(setPreviewTexture(null));
+    // No image found - clear preview (but keep panel visible in demo mode)
+    // dispatch(setPreviewTexture(null));
   }, [graphNodes, graphEdges, dispatch]);
 }

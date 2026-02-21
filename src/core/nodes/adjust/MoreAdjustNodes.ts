@@ -29,7 +29,7 @@ export const LevelsNode: NodeTypeDefinition = {
     return { width: 1920, height: 1080 };
   },
 
-  execute: ({ inputs, params, outputSize }) => {
+  execute: ({ inputs, outputSize }) => {
     const imageInput = inputs.image;
 
     if (!imageInput || !imageInput.texture) {
@@ -85,7 +85,7 @@ export const HSLNode: NodeTypeDefinition = {
     return { width: 1920, height: 1080 };
   },
 
-  execute: ({ inputs, params, outputSize }) => {
+  execute: ({ inputs, outputSize }) => {
     const imageInput = inputs.image;
 
     if (!imageInput || !imageInput.texture) {
@@ -147,7 +147,7 @@ export const ColorBalanceNode: NodeTypeDefinition = {
     return { width: 1920, height: 1080 };
   },
 
-  execute: ({ inputs, params, outputSize }) => {
+  execute: ({ inputs, outputSize }) => {
     const imageInput = inputs.image;
 
     if (!imageInput || !imageInput.texture) {

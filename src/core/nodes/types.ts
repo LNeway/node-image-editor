@@ -30,6 +30,7 @@ export interface ParamDefinition {
 export interface NodeOutput {
   type: 'image' | 'mask' | 'number' | 'color' | 'bbox';
   texture?: WebGLTexture | null;
+  dataUrl?: string | null;
   width?: number;
   height?: number;
   value?: number | { r: number; g: number; b: number; a: number } | { x: number; y: number; w: number; h: number };

@@ -33,7 +33,7 @@ export const ResizeNode: NodeTypeDefinition = {
     };
   },
 
-  execute: ({ inputs, params, outputSize }) => {
+  execute: ({ inputs, outputSize }) => {
     const imageInput = inputs.image;
 
     return {
@@ -126,7 +126,7 @@ export const RotateNode: NodeTypeDefinition = {
     return { width: 1920, height: 1080 };
   },
 
-  execute: ({ inputs, params, outputSize }) => {
+  execute: ({ inputs, outputSize }) => {
     const imageInput = inputs.image;
 
     return {
@@ -169,7 +169,7 @@ export const FlipNode: NodeTypeDefinition = {
     return { width: 1920, height: 1080 };
   },
 
-  execute: ({ inputs, params, outputSize }) => {
+  execute: ({ inputs, outputSize }) => {
     const imageInput = inputs.image;
 
     return {
