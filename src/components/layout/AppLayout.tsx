@@ -1,7 +1,9 @@
-import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { addEdge, applyNodeChanges, applyEdgeChanges, Node, Edge, OnNodesChange, OnEdgesChange, OnConnect } from 'reactflow';
-import { addNode, addEdge as addGraphEdge } from '../../store/graphSlice';
+import { addNode, addEdge as addGraphEdge, setNodes, setEdges } from '../../store/graphSlice';
+import { selectNode } from '../../store/uiSlice';
+import { RootState } from '../../store';
 import TopToolbar from '../layout/TopToolbar';
 import NodeLibrary from '../node-library/NodeLibrary';
 import NodeCanvas from '../canvas/NodeCanvas';
@@ -15,120 +17,74 @@ export default function AppLayout() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   
-  // React Flow state
-  // 演示数据：预设置两个连接的节点（无默认图片）
-  const [rfNodes, setRfNodes] = useState<Node[]>([
-    {
-      id: 'image_import-demo',
-      type: 'custom',
-      position: { x: 50, y: 150 },
-      data: {
-        label: '图片导入',
-        labelKey: 'node.image_import',
-        category: '输入',
-        inputs: [],
-        outputs: [{ name: 'image', type: 'image' }],
-        nodeType: 'image_import',
-        params: {},
-      },
-    },
-    {
-      id: 'preview_output-demo',
-      type: 'custom',
-      position: { x: 500, y: 150 },
-      data: {
-        label: '预览输出',
-        labelKey: 'node.preview_output',
-        category: '输出',
-        inputs: [{ name: 'image', type: 'image' }],
-        outputs: [],
-        nodeType: 'preview_output',
-        params: {},
-      },
-    },
-  ]);
+  // ========== 数据驱动：所有状态从 Redux 读取 ==========
+  const nodes = useSelector((state: RootState) => state.graph.nodes);
+  const edges = useSelector((state: RootState) => state.graph.edges);
+  const selectedNodeId = useSelector((state: RootState) => state.ui.selectedNodeId);
   
-  const [rfEdges, setRfEdges] = useState<Edge[]>([
-    {
-      id: 'edge-demo-1',
-      source: 'image_import-demo',
-      target: 'preview_output-demo',
-      sourceHandle: 'image',
-      targetHandle: 'image',
-      type: 'bezier',
-      animated: true,
-      style: { stroke: '#00b894', strokeWidth: 2 },
-    },
-  ]);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  // 执行引擎 - 从 Redux 读取数据
+  useExecutionManager();
 
-  // Execution manager - 传递节点和边数据
-  useExecutionManager(rfNodes, rfEdges);
-
-  // 节点变化处理
+  // 节点变化处理 - 更新到 Redux
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => {
-      setRfNodes((nds) => applyNodeChanges(changes, nds));
+      // 使用 React Flow 的 applyNodeChanges 处理变化
+      const newNodes = applyNodeChanges(changes, nodes);
+      dispatch(setNodes(newNodes));
     },
-    []
+    [dispatch, nodes]
   );
 
-  // 边变化处理
+  // 边变化处理 - 更新到 Redux
   const onEdgesChange: OnEdgesChange = useCallback(
     (changes) => {
-      setRfEdges((eds) => applyEdgeChanges(changes, eds));
+      const newEdges = applyEdgeChanges(changes, edges);
+      dispatch(setEdges(newEdges));
     },
-    []
+    [dispatch, edges]
   );
 
-  // 连接处理 - 使用 React Flow 的 addEdge 返回新边
+  // 连接处理 - 更新到 Redux
   const onConnect: OnConnect = useCallback(
     (connection) => {
-      // 使用 React Flow 的 addEdge 创建新边
-      setRfEdges((eds) => {
-        // 创建新边配置
-        const newEdge = {
-          ...connection,
-          id: `edge-${Date.now()}`,
-          type: 'bezier',
-          animated: true,
-          style: { stroke: '#00b894', strokeWidth: 2 },
-          sourceHandle: connection.sourceHandle,
-          targetHandle: connection.targetHandle,
-        };
-        
-        // 使用 addEdge 处理并返回新边列表
-        return addEdge(newEdge, eds);
-      });
+      if (!connection.source || !connection.target) return;
+      
+      // 创建新边配置
+      const newEdge: Edge = {
+        id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
+        source: connection.source,
+        target: connection.target,
+        type: 'bezier',
+        animated: true,
+        style: { stroke: '#00b894', strokeWidth: 2 },
+        sourceHandle: connection.sourceHandle,
+        targetHandle: connection.targetHandle,
+      };
+      
+      // 使用 React Flow 的 addEdge 处理
+      const updatedEdges = addEdge(newEdge, edges);
+      dispatch(setEdges(updatedEdges));
       
       // 同时更新 Redux store
-      if (connection.source && connection.target) {
-        dispatch(addGraphEdge({
-          id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
-          source: connection.source,
-          target: connection.target,
-          sourceHandle: connection.sourceHandle || null,
-          targetHandle: connection.targetHandle || null,
-        }));
-      }
+      dispatch(addGraphEdge(newEdge));
     },
-    [dispatch]
+    [dispatch, edges]
   );
 
-  // 节点点击处理
+  // 节点点击处理 - 更新 Redux
   const handleNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
-    setSelectedNodeId(node.id);
-  }, []);
+    dispatch(selectNode(node.id));
+  }, [dispatch]);
 
-  // 画布点击取消选中
+  // 画布点击取消选中 - 更新 Redux
   const handlePaneClick = useCallback(() => {
-    setSelectedNodeId(null);
-  }, []);
+    dispatch(selectNode(null));
+  }, [dispatch]);
 
-  // 获取当前选中的节点数据
-  const selectedNode = rfNodes.find(n => n.id === selectedNodeId);
+  // 从 Redux 获取当前选中的节点
+  const selectedNode = nodes.find(n => n.id === selectedNodeId);
 
-  // 添加节点到画布
+  // 添加节点到画布 - 更新 Redux
   const handleAddNode = useCallback((nodeType: string) => {
     const nodeDef = nodeRegistry.get(nodeType);
     if (!nodeDef) return;
@@ -138,7 +94,6 @@ export default function AppLayout() {
       image_import: { x: 100, y: 200 },
       gaussian_blur: { x: 450, y: 200 },
       preview_output: { x: 800, y: 200 },
-      // 其他节点的默认位置
       brightness_contrast: { x: 450, y: 200 },
       color_balance: { x: 450, y: 350 },
       hsl_adjust: { x: 450, y: 350 },
@@ -152,7 +107,7 @@ export default function AppLayout() {
       image_export: { x: 800, y: 200 },
     };
     
-    const defaultPos = nodePositions[nodeType] || { x: 100 + (rfNodes.length * 300), y: 200 };
+    const defaultPos = nodePositions[nodeType] || { x: 100 + (nodes.length * 300), y: 200 };
     
     const newNode: Node = {
       id: `${nodeType}-${Date.now()}`,
@@ -172,9 +127,9 @@ export default function AppLayout() {
       },
     };
 
-    setRfNodes((nds) => [...nds, newNode]);
+    // 只更新 Redux store
     dispatch(addNode(newNode));
-  }, [dispatch, rfNodes.length, t]);
+  }, [dispatch, nodes.length, t]);
 
   return (
     <div className="h-screen w-screen flex flex-col bg-[#1a1a1a] text-white">
@@ -186,11 +141,11 @@ export default function AppLayout() {
         {/* 左侧节点库 */}
         <NodeLibrary onAddNode={handleAddNode} />
         
-        {/* 中间画布 */}
+        {/* 中间画布 - 数据来自 Redux */}
         <div className="flex-1 relative">
           <NodeCanvas
-            nodes={rfNodes}
-            edges={rfEdges}
+            nodes={nodes}
+            edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -202,14 +157,14 @@ export default function AppLayout() {
           <PreviewPanel />
         </div>
         
-        {/* 右侧属性面板 */}
+        {/* 右侧属性面板 - 数据来自 Redux */}
         <PropertiesPanel selectedNode={selectedNode} />
       </div>
       
       {/* 底部状态栏 */}
       <div className="h-8 bg-[#252525] border-t border-[#333] flex items-center px-4 text-sm text-[#666]">
         <span>Status Bar</span>
-        <span className="ml-auto">Nodes: {rfNodes.length} | Edges: {rfEdges.length}</span>
+        <span className="ml-auto">Nodes: {nodes.length} | Edges: {edges.length}</span>
       </div>
     </div>
   );

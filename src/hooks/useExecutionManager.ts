@@ -1,16 +1,18 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setPreviewTexture, setPreviewSize } from '../store/uiSlice';
+import { RootState } from '../store';
 
 /**
  * ExecutionManager - 自动检测图片导入节点并显示预览
+ * 遵循数据驱动原则：从 Redux store 读取节点数据
  */
-export function useExecutionManager(nodes: any[] = [], edges: any[] = []) {
+export function useExecutionManager() {
   const dispatch = useDispatch();
   
-  // 直接从 props 接收节点数据，而不是从 Redux 读取
-  const graphNodes = nodes;
-  const graphEdges = edges;
+  // 数据驱动：从 Redux store 读取数据
+  const graphNodes = useSelector((state: RootState) => state.graph.nodes);
+  const graphEdges = useSelector((state: RootState) => state.graph.edges);
 
   // Execute when nodes change - find any image_import node with image data
   useEffect(() => {
@@ -21,17 +23,12 @@ export function useExecutionManager(nodes: any[] = [], edges: any[] = []) {
         const params = (node.data as any)?.params || {};
         let imageData = params.imageData;
         
-        // 如果是相对路径，转换为完整路径
-        if (imageData && typeof imageData === 'string' && !imageData.startsWith('data:') && !imageData.startsWith('http')) {
-          imageData = imageData;
-        }
-        
         if (imageData && typeof imageData === 'string' && (imageData.startsWith('data:') || imageData.startsWith('/'))) {
           console.log('[Execution] Found image_import node with data, updating preview');
           
           // 如果是路径，先加载为 base64
           const loadImage = (src: string) => {
-            // 尝试直接使用
+            // 尝试直接使用 data URL
             if (src.startsWith('data:')) {
               dispatch(setPreviewTexture(src));
               const img = new Image();
@@ -69,7 +66,7 @@ export function useExecutionManager(nodes: any[] = [], edges: any[] = []) {
       }
     }
     
-    // No image found - clear preview (but keep panel visible in demo mode)
-    // dispatch(setPreviewTexture(null));
+    // No image found - clear preview
+    dispatch(setPreviewTexture(null));
   }, [graphNodes, graphEdges, dispatch]);
 }

@@ -1,16 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import uiReducer from '../../src/store/uiSlice';
+import graphReducer from '../../src/store/graphSlice';
 import { useExecutionManager } from '../../src/hooks/useExecutionManager';
 
-describe('useExecutionManager', () => {
-  const createTestStore = () => {
+describe('useExecutionManager - 数据驱动模式', () => {
+  const createTestStore = (preloadedState = {}) => {
     return configureStore({
       reducer: {
         ui: uiReducer,
+        graph: graphReducer,
       },
+      preloadedState,
     });
   };
 
@@ -25,63 +28,74 @@ describe('useExecutionManager', () => {
   });
 
   it('应该在没有图片导入节点时清除预览', () => {
-    const store = createTestStore();
-    const { result } = renderHook(
-      () => useExecutionManager([], []),
+    const store = createTestStore({
+      graph: { nodes: [], edges: [] },
+      ui: { selectedNodeId: null, previewTexture: null, previewSize: { width: 1920, height: 1080 } }
+    });
+
+    renderHook(
+      () => useExecutionManager(),
       { wrapper: wrapper(store) }
     );
 
-    // 初始状态下 previewTexture 应该为 null
     const state = store.getState();
     expect(state.ui.previewTexture).toBeNull();
   });
 
   it('应该在有图片导入节点且有 imageData 时设置预览', () => {
-    const store = createTestStore();
     const testImageData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
-    const nodes = [
-      {
-        id: 'image_import-1',
-        data: {
-          nodeType: 'image_import',
-          params: {
-            imageData: testImageData,
+    const store = createTestStore({
+      graph: {
+        nodes: [
+          {
+            id: 'image_import-1',
+            data: {
+              nodeType: 'image_import',
+              params: {
+                imageData: testImageData,
+              },
+            },
           },
-        },
+        ],
+        edges: [],
       },
-    ];
+      ui: { selectedNodeId: null, previewTexture: null, previewSize: { width: 1920, height: 1080 } }
+    });
 
-    const { result } = renderHook(
-      () => useExecutionManager(nodes, []),
+    renderHook(
+      () => useExecutionManager(),
       { wrapper: wrapper(store) }
     );
 
-    // 由于是异步加载图片，需要等待
-    // 这里我们验证 store 状态是否正确更新 - 应该有数据
     const state = store.getState();
-    // 验证预览纹理已被设置（不是 null）
+    // 验证预览纹理已被设置
     expect(state.ui.previewTexture).toBe(testImageData);
   });
 
   it('应该忽略非图片导入节点', () => {
-    const store = createTestStore();
     const testImageData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
-    const nodes = [
-      {
-        id: 'blur-1',
-        data: {
-          nodeType: 'gaussian_blur',
-          params: {
-            imageData: testImageData,
+    const store = createTestStore({
+      graph: {
+        nodes: [
+          {
+            id: 'blur-1',
+            data: {
+              nodeType: 'gaussian_blur',
+              params: {
+                imageData: testImageData,
+              },
+            },
           },
-        },
+        ],
+        edges: [],
       },
-    ];
+      ui: { selectedNodeId: null, previewTexture: null, previewSize: { width: 1920, height: 1080 } }
+    });
 
     renderHook(
-      () => useExecutionManager(nodes, []),
+      () => useExecutionManager(),
       { wrapper: wrapper(store) }
     );
 
@@ -91,25 +105,29 @@ describe('useExecutionManager', () => {
   });
 
   it('应该在节点没有 imageData 参数时清除预览', () => {
-    const store = createTestStore();
-
-    const nodes = [
-      {
-        id: 'image_import-1',
-        data: {
-          nodeType: 'image_import',
-          params: {},
-        },
+    const store = createTestStore({
+      graph: {
+        nodes: [
+          {
+            id: 'image_import-1',
+            data: {
+              nodeType: 'image_import',
+              params: {},
+            },
+          },
+        ],
+        edges: [],
       },
-    ];
+      ui: { selectedNodeId: null, previewTexture: 'some-data', previewSize: { width: 1920, height: 1080 } }
+    });
 
     renderHook(
-      () => useExecutionManager(nodes, []),
+      () => useExecutionManager(),
       { wrapper: wrapper(store) }
     );
 
     const state = store.getState();
-    // 应该保持 null，因为没有 imageData
+    // 应该清除预览，因为没有 imageData
     expect(state.ui.previewTexture).toBeNull();
   });
 });
