@@ -126,11 +126,12 @@ export default function PreviewPanel() {
   return (
     <div 
       ref={panelRef}
-      className="fixed z-50"
+      className="fixed"
       style={{ 
         left: position.x > 0 ? position.x : undefined, 
         top: position.y > 0 ? position.y : undefined,
-        transition: isDragging ? 'none' : 'all 0.2s ease'
+        transition: isDragging ? 'none' : 'all 0.2s ease',
+        pointerEvents: 'none', // 让鼠标事件穿透到画布
       }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -140,6 +141,7 @@ export default function PreviewPanel() {
       <div 
         className="flex items-center justify-between px-3 py-1.5 rounded-t-lg cursor-move select-none bg-[#252525] border border-[#333] border-b-0"
         onMouseDown={handleMouseDown}
+        style={{ pointerEvents: 'auto' }}
       >
         <span className="text-xs font-medium text-white">{t('panel.preview')}</span>
         <button onClick={() => setIsMinimized(!isMinimized)} className="text-[#666] hover:text-white text-xs">
@@ -150,7 +152,7 @@ export default function PreviewPanel() {
       {/* Canvas Preview */}
       {!isMinimized && (
         <div className="bg-[#1a1a1a] border border-[#333] rounded-b-lg">
-          <canvas ref={canvasRef} className="block max-w-[480px] max-h-[270px]" />
+          <canvas ref={canvasRef} className="block max-w-[480px] max-h-[270px]" style={{ pointerEvents: 'auto' }} />
           <div className="px-3 py-1.5 bg-[#252525] border-t border-[#333] flex justify-between text-xs text-[#666]">
             <span>{previewSize ? `${previewSize.width} × ${previewSize.height}` : '-'}</span>
             <span className={previewTexture ? "text-green-500" : "text-yellow-500"}>

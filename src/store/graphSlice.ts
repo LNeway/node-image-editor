@@ -63,9 +63,14 @@ const graphSlice = createSlice({
       state.nodes.push(action.payload);
     },
     updateNode: (state, action: PayloadAction<{ id: string; data: Record<string, any> }>) => {
-      const node = state.nodes.find((n) => n.id === action.payload.id);
-      if (node) {
-        node.data = { ...node.data, ...action.payload.data };
+      const index = state.nodes.findIndex((n) => n.id === action.payload.id);
+      if (index !== -1) {
+        // 创建新的节点对象以确保 React 检测到变化
+        const oldNode = state.nodes[index];
+        state.nodes[index] = {
+          ...oldNode,
+          data: { ...oldNode.data, ...action.payload.data },
+        };
       }
     },
     removeNode: (state, action: PayloadAction<string>) => {

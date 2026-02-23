@@ -59,19 +59,29 @@ const { chromium } = require('@playwright/test');
   console.log(`  连接数: ${edges}, 结果: ${results[results.length-1].result}\n`);
   
   // 关闭预览
-  const closeBtn = page.locator('.fixed.z-50 button').first();
+  const closeBtn = page.locator('.fixed button').first();
   if (await closeBtn.isVisible()) {
     await closeBtn.click();
     await page.waitForTimeout(500);
   }
   
-  // 选择亮度/对比度节点
+  // 选择亮度/对比度节点 - 通过文本查找
   console.log('[ADJ-05] 选择亮度/对比度节点');
   const nodes = await page.locator('.react-flow__node-custom').all();
   console.log(`  节点数: ${nodes.length}`);
   
-  if (nodes.length >= 2) {
-    await nodes[1].click({ force: true });
+  // 找到包含"亮度"的节点并点击
+  let foundNode = null;
+  for (const node of nodes) {
+    const text = await node.textContent();
+    if (text?.includes('亮度')) {
+      foundNode = node;
+      break;
+    }
+  }
+  
+  if (foundNode) {
+    await foundNode.click({ force: true });
     await page.waitForTimeout(1500);
   }
   

@@ -1,7 +1,5 @@
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
-import { useDispatch } from 'react-redux';
-import { setSelectedNode } from '../../store/uiSlice';
 
 interface CustomNodeData {
   label: string;
@@ -22,13 +20,8 @@ const portColors: Record<string, string> = {
   bbox: '#e17055',
 };
 
-function CustomNode({ id, data, selected }: NodeProps<CustomNodeData>) {
-  const dispatch = useDispatch();
-
-  const handleClick = useCallback(() => {
-    dispatch(setSelectedNode(id));
-  }, [dispatch, id]);
-
+function CustomNode({ data, selected }: NodeProps<CustomNodeData>) {
+  // 节点选择由 ReactFlow 的 onNodeClick 处理，不需要额外的 onClick
   // 获取端口数据
   const inputs = data?.inputs || [];
   const outputs = data?.outputs || [];
@@ -39,7 +32,6 @@ function CustomNode({ id, data, selected }: NodeProps<CustomNodeData>) {
         min-w-[180px] bg-bg-secondary rounded-lg border-2 transition-all
         ${selected ? 'border-node-image shadow-lg shadow-node-image/20' : 'border-border-color'}
       `}
-      onClick={handleClick}
     >
       {/* 节点标题 */}
       <div className="px-3 py-2 border-b border-border-color bg-bg-tertiary rounded-t-lg">

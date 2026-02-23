@@ -72,8 +72,10 @@ export default function AppLayout() {
   );
 
   // 节点点击处理 - 更新 Redux
-  const handleNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
+  const handleNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
+    console.log('[AppLayout] Node clicked:', node.id, node.data?.nodeType);
     dispatch(selectNode(node.id));
+    console.log('[AppLayout] selectedNodeId should be:', node.id);
   }, [dispatch]);
 
   // 画布点击取消选中 - 更新 Redux
