@@ -25,22 +25,31 @@ const { chromium } = require('@playwright/test');
   await page.click('button:has-text("预览输出")');
   await page.waitForTimeout(500);
   
-  // 连接节点
+  // 连接节点 - 使用 mouse 直接拖拽
   console.log('[ADJ-04] 连接节点链');
+  
+  // 关闭预览以避免遮挡
+  const previewClose = page.locator('.fixed button').first();
+  if (await previewClose.isVisible()) {
+    await previewClose.click();
+    await page.waitForTimeout(500);
+  }
+  
   const rightHandles = await page.locator('.react-flow__handle-right').all();
   const leftHandles = await page.locator('.react-flow__handle-left').all();
   
+  // 连接1: 纯色 -> 亮度
   if (rightHandles.length > 0 && leftHandles.length > 0) {
     const src1 = await rightHandles[0].boundingBox();
     const tgt1 = await leftHandles[0].boundingBox();
     await page.mouse.move(src1.x + 3, src1.y + 3);
     await page.mouse.down();
-    await page.mouse.move(tgt1.x + 3, tgt1.y + 3, { steps: 15 });
+    await page.mouse.move(tgt1.x + 3, tgt1.y + 3, { steps: 20 });
     await page.mouse.up();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(800);
   }
   
-  // 连接第二根线
+  // 连接2: 亮度 -> 预览
   const rightHandles2 = await page.locator('.react-flow__handle-right').all();
   const leftHandles2 = await page.locator('.react-flow__handle-left').all();
   
@@ -49,21 +58,14 @@ const { chromium } = require('@playwright/test');
     const tgt2 = await leftHandles2[1].boundingBox();
     await page.mouse.move(src2.x + 3, src2.y + 3);
     await page.mouse.down();
-    await page.mouse.move(tgt2.x + 3, tgt2.y + 3, { steps: 15 });
+    await page.mouse.move(tgt2.x + 3, tgt2.y + 3, { steps: 20 });
     await page.mouse.up();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(800);
   }
   
   const edges = await page.locator('.react-flow__edge').count();
   results.push({ id: 'ADJ-04', name: '连接节点链(纯色→亮度→预览)', result: edges >= 2 ? 'PASS' : 'FAIL' });
   console.log(`  连接数: ${edges}, 结果: ${results[results.length-1].result}\n`);
-  
-  // 关闭预览
-  const closeBtn = page.locator('.fixed button').first();
-  if (await closeBtn.isVisible()) {
-    await closeBtn.click();
-    await page.waitForTimeout(500);
-  }
   
   // 选择亮度/对比度节点 - 通过文本查找
   console.log('[ADJ-05] 选择亮度/对比度节点');
