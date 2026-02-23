@@ -100,13 +100,9 @@ const { chromium } = require('@playwright/test');
   results.push({ id: 'ADJ-06', name: '亮度参数滑块显示', result: sliders.length >= 2 ? 'PASS' : 'FAIL' });
   console.log(`  结果: ${results[results.length-1].result}\n`);
   
-  // 添加色阶节点测试
+  // 添加色阶节点测试 - 不使用 reload，直接添加
   console.log('[ADJ-07] 添加色阶节点');
-  await page.reload();
-  await page.waitForTimeout(2000);
   
-  await page.click('button:has-text("纯色填充")');
-  await page.waitForTimeout(500);
   await page.click('button:has-text("色阶")');
   await page.waitForTimeout(500);
   await page.click('button:has-text("预览输出")');
@@ -136,10 +132,19 @@ const { chromium } = require('@playwright/test');
     await page.waitForTimeout(1000);
   }
   
-  // 选择色阶节点
+  // 选择色阶节点 - 通过文本查找
   const nodes2 = await page.locator('.react-flow__node-custom').all();
-  if (nodes2.length >= 2) {
-    await nodes2[1].click({ force: true });
+  let levelsNode = null;
+  for (const node of nodes2) {
+    const text = await node.textContent();
+    if (text?.includes('色阶')) {
+      levelsNode = node;
+      break;
+    }
+  }
+  
+  if (levelsNode) {
+    await levelsNode.click({ force: true });
     await page.waitForTimeout(1000);
   }
   
