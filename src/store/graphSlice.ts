@@ -7,8 +7,52 @@ export interface GraphState {
 }
 
 const initialState: GraphState = {
-  nodes: [],
-  edges: [],
+  nodes: [
+    {
+      id: 'solid_color-demo',
+      type: 'custom',
+      position: { x: 400, y: 300 },
+      data: {
+        label: '纯色填充',
+        labelKey: 'node.input.solid_color',
+        category: '输入',
+        inputs: [],
+        outputs: [{ name: 'image', type: 'image' }],
+        nodeType: 'solid_color',
+        params: {
+          color: { r: 1, g: 0, b: 0, a: 1 }, // Red
+          width: 1920,
+          height: 1080,
+        },
+      },
+    },
+    {
+      id: 'preview_output-demo',
+      type: 'custom',
+      position: { x: 750, y: 300 },
+      data: {
+        label: '预览输出',
+        labelKey: 'node.output.preview_output',
+        category: '输出',
+        inputs: [{ name: 'image', type: 'image' }],
+        outputs: [],
+        nodeType: 'preview_output',
+        params: {},
+      },
+    },
+  ],
+  edges: [
+    {
+      id: 'edge-solid',
+      source: 'solid_color-demo',
+      target: 'preview_output-demo',
+      sourceHandle: 'image',
+      targetHandle: 'image',
+      type: 'bezier',
+      animated: true,
+      style: { stroke: '#00b894', strokeWidth: 2 },
+    },
+  ],
 };
 
 const graphSlice = createSlice({

@@ -153,7 +153,9 @@ export default function PreviewPanel() {
           <canvas ref={canvasRef} className="block max-w-[480px] max-h-[270px]" />
           <div className="px-3 py-1.5 bg-[#252525] border-t border-[#333] flex justify-between text-xs text-[#666]">
             <span>{previewSize ? `${previewSize.width} × ${previewSize.height}` : '-'}</span>
-            <span className="text-green-500">已加载</span>
+            <span className={previewTexture ? "text-green-500" : "text-yellow-500"}>
+              {previewTexture ? "已加载" : "等待中"}
+            </span>
           </div>
         </div>
       )}
