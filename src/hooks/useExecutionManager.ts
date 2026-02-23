@@ -81,7 +81,11 @@ export function useExecutionManager() {
         }
 
         case 'solid_color': {
-          const color = params.color || { r: 0.5, g: 0.5, b: 0.5, a: 1 };
+          const colorParam = params.color;
+          // 确保 color 是有效对象，否则使用默认值
+          const color = (colorParam && typeof colorParam === 'object' && 'r' in colorParam)
+            ? colorParam 
+            : { r: 0.5, g: 0.5, b: 0.5, a: 1 };
           width = params.width || 1920;
           height = params.height || 1080;
           
