@@ -4,7 +4,7 @@ export const ImageImportNode: NodeTypeDefinition = {
   type: 'image_import',
   label: 'node.input.image_import',
   category: 'input',
-  description: 'node.input.image_import.description',
+  description: 'node.input.image_import_description',
 
   inputs: [],
 

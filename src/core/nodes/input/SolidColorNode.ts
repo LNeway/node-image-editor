@@ -4,7 +4,7 @@ export const SolidColorNode: NodeTypeDefinition = {
   type: 'solid_color',
   label: 'node.input.solid_color',
   category: 'input',
-  description: 'node.input.solid_color.description',
+  description: 'node.input.solid_color_description',
 
   inputs: [],
 

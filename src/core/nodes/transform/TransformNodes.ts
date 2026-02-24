@@ -5,7 +5,7 @@ export const ResizeNode: NodeTypeDefinition = {
   type: 'resize',
   label: 'node.transform.resize',
   category: 'transform',
-  description: 'node.transform.resize.description',
+  description: 'node.transform.resize_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },
@@ -53,7 +53,7 @@ export const CropNode: NodeTypeDefinition = {
   type: 'crop',
   label: 'node.transform.crop',
   category: 'transform',
-  description: 'node.transform.crop.description',
+  description: 'node.transform.crop_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },
@@ -103,7 +103,7 @@ export const RotateNode: NodeTypeDefinition = {
   type: 'rotate',
   label: 'node.transform.rotate',
   category: 'transform',
-  description: 'node.transform.rotate.description',
+  description: 'node.transform.rotate_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },
@@ -146,7 +146,7 @@ export const FlipNode: NodeTypeDefinition = {
   type: 'flip',
   label: 'node.transform.flip',
   category: 'transform',
-  description: 'node.transform.flip.description',
+  description: 'node.transform.flip_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },

@@ -9,7 +9,7 @@ export const ImageExportNode: NodeTypeDefinition = {
   type: 'image_export',
   label: 'node.output.image_export',
   category: 'output',
-  description: 'node.output.image_export.description',
+  description: 'node.output.image_export_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },

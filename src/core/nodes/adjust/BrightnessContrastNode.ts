@@ -4,7 +4,7 @@ export const BrightnessContrastNode: NodeTypeDefinition = {
   type: 'brightness_contrast',
   label: 'node.adjust.brightness_contrast',
   category: 'adjust',
-  description: 'node.adjust.brightness_contrast.description',
+  description: 'node.adjust.brightness_contrast_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },

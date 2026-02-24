@@ -4,7 +4,7 @@ export const BlendNode: NodeTypeDefinition = {
   type: 'blend',
   label: 'node.composite.blend',
   category: 'composite',
-  description: 'node.composite.blend.description',
+  description: 'node.composite.blend_description',
 
   inputs: [
     { key: 'base', label: 'node.blend.base', dataType: 'image' },
