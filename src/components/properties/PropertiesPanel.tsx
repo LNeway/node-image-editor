@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { updateNode } from '../../store/graphSlice';
 import { Node } from 'reactflow';
 import { nodeRegistry } from '../../core/nodes/NodeRegistry';
+import { getExecutionEngine } from '../../core/engine/ExecutionEngine';
+import { useEffect, useState, useRef } from 'react';
 import SliderParam from './params/SliderParam';
 import SelectParam from './params/SelectParam';
 import ColorParam from './params/ColorParam';
@@ -18,6 +20,8 @@ interface PropertiesPanelProps {
 export default function PropertiesPanel({ selectedNode }: PropertiesPanelProps) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const [previewDataUrl, setPreviewDataUrl] = useState<string | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // 获取节点定义 - use nodeType field from data
   const nodeDef = selectedNode?.data?.nodeType ? nodeRegistry.get(selectedNode.data.nodeType) : null;
@@ -30,6 +34,58 @@ export default function PropertiesPanel({ selectedNode }: PropertiesPanelProps) 
       data: { params: { ...selectedNode?.data?.params, [key]: value } },
     }));
   };
+
+  // 获取节点输出预览图
+  useEffect(() => {
+    if (!selectedNode) {
+      setPreviewDataUrl(null);
+      return;
+    }
+
+    const engine = getExecutionEngine();
+    const nodeResult = engine.getNodeResult(selectedNode.id);
+    
+    if (!nodeResult) {
+      setPreviewDataUrl(null);
+      return;
+    }
+
+    // 查找图像输出
+    const imageOutput = nodeResult.image || Object.values(nodeResult)[0] as any;
+    if (!imageOutput || !imageOutput.texture) {
+      setPreviewDataUrl(null);
+      return;
+    }
+
+    // 获取 GPU context 来转换纹理
+    const gpu = (engine as any).gpuContext;
+    if (!gpu) {
+      setPreviewDataUrl(null);
+      return;
+    }
+
+    // 将纹理渲染到 canvas 并转换为 data URL
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      setPreviewDataUrl(null);
+      return;
+    }
+
+    try {
+      // 使用 GPUContext 的 copyToCanvas 方法
+      gpu.copyToCanvas(imageOutput.texture, canvas, {
+        width: 320,
+        height: 180,
+      });
+      
+      // 转换为 data URL
+      const dataUrl = canvas.toDataURL('image/png');
+      setPreviewDataUrl(dataUrl);
+    } catch (error) {
+      console.error('Failed to render preview:', error);
+      setPreviewDataUrl(null);
+    }
+  }, [selectedNode?.id, selectedNode?.data?.params]);
 
   if (!selectedNode) {
     return (
@@ -63,10 +119,19 @@ export default function PropertiesPanel({ selectedNode }: PropertiesPanelProps) 
       {/* 节点预览 */}
       <div className="p-4 border-b border-border-color">
         <div className="text-xs text-text-secondary mb-2">{t('properties.preview')}</div>
-        <div className="aspect-video bg-bg-primary rounded border border-border-color flex items-center justify-center">
-          <span className="text-text-secondary text-sm">{t('properties.no_preview')}</span>
+        <div className="aspect-video bg-bg-primary rounded border border-border-color flex items-center justify-center overflow-hidden">
+          {previewDataUrl ? (
+            <img 
+              src={previewDataUrl} 
+              alt="Node output preview" 
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <span className="text-text-secondary text-sm">{t('properties.no_preview')}</span>
+          )}
         </div>
       </div>
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
 
       {/* 输入端口 */}
       {nodeDef?.inputs && nodeDef.inputs.length > 0 && (
