@@ -67,10 +67,16 @@ const graphSlice = createSlice({
       if (index !== -1) {
         // 创建新的节点对象以确保 React 检测到变化
         const oldNode = state.nodes[index];
-        state.nodes[index] = {
+        const newNode = {
           ...oldNode,
           data: { ...oldNode.data, ...action.payload.data },
         };
+        // 创建新的数组引用以确保 useSelector 检测到变化
+        state.nodes = [
+          ...state.nodes.slice(0, index),
+          newNode,
+          ...state.nodes.slice(index + 1),
+        ];
       }
     },
     removeNode: (state, action: PayloadAction<string>) => {
