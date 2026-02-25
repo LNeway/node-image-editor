@@ -26,6 +26,7 @@ interface NodeCanvasProps {
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
   onNodeClick?: (event: React.MouseEvent, node: Node) => void;
+  onEdgeClick?: (event: React.MouseEvent, edge: Edge) => void;
   onPaneClick?: () => void;
 }
 
@@ -36,6 +37,7 @@ export default function NodeCanvas({
   onEdgesChange,
   onConnect,
   onNodeClick,
+  onEdgeClick,
   onPaneClick,
 }: NodeCanvasProps) {
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -69,6 +71,7 @@ export default function NodeCanvas({
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeClick={onNodeClick}
+        onEdgeClick={onEdgeClick}
         onPaneClick={onPaneClick}
         onNodeContextMenu={handleNodeContextMenu}
         onPaneContextMenu={handlePaneContextMenu}

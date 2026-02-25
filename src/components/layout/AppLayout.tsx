@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addEdge, applyNodeChanges, applyEdgeChanges, Node, Edge, OnNodesChange, OnEdgesChange, OnConnect } from 'reactflow';
-import { addNode, addEdge as addGraphEdge, setNodes, setEdges } from '../../store/graphSlice';
-import { selectNode } from '../../store/uiSlice';
+import { addNode, addEdge as addGraphEdge, setNodes, setEdges, removeEdge as removeGraphEdge } from '../../store/graphSlice';
+import { selectNode, selectEdge } from '../../store/uiSlice';
 import { RootState } from '../../store';
 import TopToolbar from '../layout/TopToolbar';
 import NodeLibrary from '../node-library/NodeLibrary';
@@ -21,6 +21,7 @@ export default function AppLayout() {
   const nodes = useSelector((state: RootState) => state.graph.nodes);
   const edges = useSelector((state: RootState) => state.graph.edges);
   const selectedNodeId = useSelector((state: RootState) => state.ui.selectedNodeId);
+  const selectedEdgeId = useSelector((state: RootState) => state.ui.selectedEdgeId);
   
   // 执行引擎 - 从 Redux 读取数据
   useExecutionManager();
@@ -81,7 +82,30 @@ export default function AppLayout() {
   // 画布点击取消选中 - 更新 Redux
   const handlePaneClick = useCallback(() => {
     dispatch(selectNode(null));
+    dispatch(selectEdge(null));
   }, [dispatch]);
+
+  // 边点击处理 - 更新 Redux
+  const handleEdgeClick = useCallback((_event: React.MouseEvent, edge: Edge) => {
+    console.log('[AppLayout] Edge clicked:', edge.id);
+    dispatch(selectEdge(edge.id));
+  }, [dispatch]);
+
+  // 键盘事件处理 - 删除选中的边
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedEdgeId) {
+        console.log('[AppLayout] Deleting edge:', selectedEdgeId);
+        // Remove from Redux graph state
+        dispatch(removeGraphEdge(selectedEdgeId));
+        // Clear edge selection
+        dispatch(selectEdge(null));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [dispatch, selectedEdgeId]);
 
   // 从 Redux 获取当前选中的节点
   const selectedNode = nodes.find(n => n.id === selectedNodeId);
@@ -152,6 +176,7 @@ export default function AppLayout() {
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onNodeClick={handleNodeClick}
+            onEdgeClick={handleEdgeClick}
             onPaneClick={handlePaneClick}
           />
           
