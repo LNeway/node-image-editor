@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPreviewTexture, setPreviewSize } from '../store/uiSlice';
 import { RootState } from '../store';
@@ -12,6 +12,53 @@ export function useExecutionManager() {
   
   const graphNodes = useSelector((state: RootState) => state.graph.nodes);
   const graphEdges = useSelector((state: RootState) => state.graph.edges);
+
+  // 使用 ref 存储之前的状态，只在数据实际变化时触发 effect
+  // 这样可以排除 position 变化（拖拽节点时）导致的预览刷新
+  const prevNodesDataRef = useRef<string>('');
+  const prevEdgesDataRef = useRef<string>('');
+
+  // 提取节点的data部分用于比较（排除position变化）
+  // 只关心 nodeType 和 params 的变化，不关心位置变化
+  const getNodesData = () => {
+    return graphNodes.map(node => ({
+      id: node.id,
+      nodeType: node.data?.nodeType,
+      params: node.data?.params,
+    }));
+  };
+
+  // 序列化节点数据用于比较
+  const currentNodesDataStr = JSON.stringify(getNodesData());
+  
+  // 序列化边数据用于比较
+  const currentEdgesDataStr = JSON.stringify(graphEdges.map(e => ({
+    id: e.id,
+    source: e.source,
+    target: e.target,
+  })));
+  
+  // 检查数据是否真正变化
+  const nodesDataChanged = prevNodesDataRef.current !== currentNodesDataStr;
+  const edgesDataChanged = prevEdgesDataRef.current !== currentEdgesDataStr;
+  
+  // 只有当节点数据或边数据实际变化时才触发 effect
+  const shouldExecute = nodesDataChanged || edgesDataChanged;
+  
+  if (nodesDataChanged) {
+    prevNodesDataRef.current = currentNodesDataStr;
+    console.log('[Execution] Nodes data changed, will trigger effect');
+  }
+  if (edgesDataChanged) {
+    prevEdgesDataRef.current = currentEdgesDataStr;
+    console.log('[Execution] Edges data changed, will trigger effect');
+  }
+  if (!shouldExecute) {
+    console.log('[Execution] Data unchanged, skipping effect');
+  }
+  if (edgesDataChanged) {
+    prevEdgesDataRef.current = currentEdgesDataStr;
+  }
 
   // 加载图片
   const loadImage = (src: string): Promise<HTMLImageElement> => {
@@ -157,5 +204,5 @@ export function useExecutionManager() {
       console.error('[Execution] Error:', err);
       dispatch(setPreviewTexture(null));
     });
-  }, [graphNodes, graphEdges, dispatch]);
+  }, [shouldExecute, dispatch]);
 }
