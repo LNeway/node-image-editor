@@ -104,4 +104,50 @@ describe('Edge Selection and Deletion', () => {
     expect(store.getState().graph.edges[0].id).toBe('edge-to-keep');
     expect(store.getState().ui.selectedEdgeId).toBeNull();
   });
+
+  // Regression test: edges should have selected property for visual feedback
+  it('should add selected property to edges based on selectedEdgeId', () => {
+    const initialEdges: Edge[] = [
+      {
+        id: 'edge-1',
+        source: 'node-1',
+        target: 'node-2',
+        type: 'bezier',
+        animated: true,
+        style: { stroke: '#00b894', strokeWidth: 2 },
+      },
+      {
+        id: 'edge-2',
+        source: 'node-2',
+        target: 'node-3',
+        type: 'bezier',
+        animated: true,
+        style: { stroke: '#00b894', strokeWidth: 2 },
+      },
+    ];
+    
+    const store = createTestStore(initialEdges);
+    
+    // Simulate the edgesWithSelection logic from AppLayout
+    const selectedEdgeId = store.getState().ui.selectedEdgeId;
+    const edgesWithSelection = initialEdges.map(edge => ({
+      ...edge,
+      selected: edge.id === selectedEdgeId,
+    }));
+    
+    // Initially no edge selected
+    expect(edgesWithSelection.every(e => !e.selected)).toBe(true);
+    
+    // Select edge-1
+    store.dispatch(selectEdge('edge-1'));
+    const selectedEdgeIdAfter = store.getState().ui.selectedEdgeId;
+    const edgesWithSelectionAfter = initialEdges.map(edge => ({
+      ...edge,
+      selected: edge.id === selectedEdgeIdAfter,
+    }));
+    
+    // Verify edge-1 is selected and edge-2 is not
+    expect(edgesWithSelectionAfter.find(e => e.id === 'edge-1')?.selected).toBe(true);
+    expect(edgesWithSelectionAfter.find(e => e.id === 'edge-2')?.selected).toBe(false);
+  });
 });
