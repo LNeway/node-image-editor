@@ -5,7 +5,7 @@ export const LevelsNode: NodeTypeDefinition = {
   type: 'levels',
   label: 'node.adjust.levels',
   category: 'adjust',
-  description: 'node.adjust.levels.description',
+  description: 'node.adjust.levels_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },
@@ -61,7 +61,7 @@ export const HSLNode: NodeTypeDefinition = {
   type: 'hsl',
   label: 'node.adjust.hsl',
   category: 'adjust',
-  description: 'node.adjust.hsl.description',
+  description: 'node.adjust.hsl_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },
@@ -117,7 +117,7 @@ export const ColorBalanceNode: NodeTypeDefinition = {
   type: 'color_balance',
   label: 'node.adjust.color_balance',
   category: 'adjust',
-  description: 'node.adjust.color_balance.description',
+  description: 'node.adjust.color_balance_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },

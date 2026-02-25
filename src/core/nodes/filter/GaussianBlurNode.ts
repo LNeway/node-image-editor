@@ -4,7 +4,7 @@ export const GaussianBlurNode: NodeTypeDefinition = {
   type: 'gaussian_blur',
   label: 'node.filter.gaussian_blur',
   category: 'filter',
-  description: 'node.filter.gaussian_blur.description',
+  description: 'node.filter.gaussian_blur_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },

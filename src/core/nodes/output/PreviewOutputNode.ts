@@ -8,7 +8,7 @@ export const PreviewOutputNode: NodeTypeDefinition = {
   type: 'preview_output',
   label: 'node.output.preview',
   category: 'output',
-  description: 'node.output.preview.description',
+  description: 'node.output.preview_description',
 
   inputs: [
     { key: 'image', label: 'node.common.image', dataType: 'image' },
