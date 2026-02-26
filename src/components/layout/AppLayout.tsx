@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addEdge, applyNodeChanges, applyEdgeChanges, Node, Edge, OnNodesChange, OnEdgesChange, OnConnect } from 'reactflow';
-import { addNode, addEdge as addGraphEdge, setNodes, setEdges, removeEdge as removeGraphEdge } from '../../store/graphSlice';
+import { addNode, setNodes, setEdges, removeEdge as removeGraphEdge } from '../../store/graphSlice';
 import { selectNode, selectEdge } from '../../store/uiSlice';
 import { RootState } from '../../store';
 import TopToolbar from '../layout/TopToolbar';
@@ -71,14 +71,9 @@ export default function AppLayout() {
       if (!connection.source || !connection.target) return;
       
       // Check for existing edge to same target port and remove it (replacement pattern)
-      const existingEdgeIndex = edges.findIndex(
+      const existingEdge = edges.find(
         e => e.target === connection.target && e.targetHandle === connection.targetHandle
       );
-      
-      let updatedEdges = edges;
-      if (existingEdgeIndex !== -1) {
-        updatedEdges = edges.filter((_, i) => i !== existingEdgeIndex);
-      }
       
       // 创建新边配置
       const newEdge: Edge = {
@@ -92,12 +87,16 @@ export default function AppLayout() {
         targetHandle: connection.targetHandle,
       };
       
-      // 使用 React Flow 的 addEdge 处理
-      updatedEdges = addEdge(newEdge, updatedEdges);
-      dispatch(setEdges(updatedEdges));
+      // 使用 React Flow 的 addEdge 处理新边
+      const updatedEdges = addEdge(newEdge, edges);
       
-      // 同时更新 Redux store
-      dispatch(addGraphEdge(newEdge));
+      // 如果存在旧边，先删除旧边
+      if (existingEdge) {
+        const finalEdges = updatedEdges.filter(e => e.id !== existingEdge.id);
+        dispatch(setEdges(finalEdges));
+      } else {
+        dispatch(setEdges(updatedEdges));
+      }
     },
     [dispatch, edges]
   );

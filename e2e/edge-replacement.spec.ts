@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('edge connection replacement - single input port should only have one edge', async ({ page }) => {
-  await page.goto('http://localhost:4173', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
   await page.waitForTimeout(2000);
   
   // Expand all categories
