@@ -23,6 +23,12 @@ export default function AppLayout() {
   const selectedNodeId = useSelector((state: RootState) => state.ui.selectedNodeId);
   const selectedEdgeId = useSelector((state: RootState) => state.ui.selectedEdgeId);
   
+  // 为边添加 selected 属性以支持视觉反馈
+  const edgesWithSelection = edges.map(edge => ({
+    ...edge,
+    selected: edge.id === selectedEdgeId,
+  }));
+  
   // 执行引擎 - 从 Redux 读取数据
   useExecutionManager();
 
@@ -41,8 +47,22 @@ export default function AppLayout() {
     (changes) => {
       const newEdges = applyEdgeChanges(changes, edges);
       dispatch(setEdges(newEdges));
+      
+      // 处理边的选中状态变化，同步到 Redux
+      changes.forEach((change) => {
+        if (change.type === 'select' && 'selected' in change) {
+          if (change.selected) {
+            dispatch(selectEdge(change.id));
+          } else {
+            // 如果取消选中的是当前选中的边，则清除选择
+            if (change.id === selectedEdgeId) {
+              dispatch(selectEdge(null));
+            }
+          }
+        }
+      });
     },
-    [dispatch, edges]
+    [dispatch, edges, selectedEdgeId]
   );
 
   // 连接处理 - 更新到 Redux
@@ -62,8 +82,16 @@ export default function AppLayout() {
         targetHandle: connection.targetHandle,
       };
       
+      // 移除连接到同一目标节点+handle的现有边
+      const filteredEdges = edges.filter(
+        (edge) => !(
+          edge.target === connection.target && 
+          edge.targetHandle === connection.targetHandle
+        )
+      );
+      
       // 使用 React Flow 的 addEdge 处理
-      const updatedEdges = addEdge(newEdge, edges);
+      const updatedEdges = addEdge(newEdge, filteredEdges);
       dispatch(setEdges(updatedEdges));
       
       // 同时更新 Redux store
@@ -171,7 +199,7 @@ export default function AppLayout() {
         <div className="flex-1 relative">
           <NodeCanvas
             nodes={nodes}
-            edges={edges}
+            edges={edgesWithSelection}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
