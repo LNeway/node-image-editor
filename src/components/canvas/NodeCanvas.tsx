@@ -6,6 +6,7 @@ import ReactFlow, {
   Background,
   MiniMap,
   NodeTypes,
+  EdgeTypes,
   OnNodesChange,
   OnEdgesChange,
   OnConnect,
@@ -13,10 +14,15 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import CustomNode from './CustomNode';
+import CustomEdge from './CustomEdge';
 import ContextMenu from './ContextMenu';
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
+};
+
+const edgeTypes: EdgeTypes = {
+  custom: CustomEdge,
 };
 
 interface NodeCanvasProps {
@@ -76,6 +82,7 @@ export default function NodeCanvas({
         onNodeContextMenu={handleNodeContextMenu}
         onPaneContextMenu={handlePaneContextMenu}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         defaultViewport={{ x: 0, y: 0, zoom: 0.75 }}
         minZoom={0.1}
         maxZoom={2}
@@ -83,7 +90,7 @@ export default function NodeCanvas({
         snapGrid={[15, 15]}
         style={{ height: '100%', width: '100%' }}
         defaultEdgeOptions={{
-          type: 'bezier',
+          type: 'custom',
           animated: true,
           style: { stroke: '#00b894', strokeWidth: 2 },
         }}

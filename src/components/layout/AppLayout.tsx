@@ -80,7 +80,7 @@ export default function AppLayout() {
         id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
         source: connection.source,
         target: connection.target,
-        type: 'bezier',
+        type: 'custom',
         animated: true,
         style: { stroke: '#00b894', strokeWidth: 2 },
         sourceHandle: connection.sourceHandle,
