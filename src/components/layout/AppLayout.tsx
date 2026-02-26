@@ -70,6 +70,16 @@ export default function AppLayout() {
     (connection) => {
       if (!connection.source || !connection.target) return;
       
+      // Check for existing edge to same target port and remove it (replacement pattern)
+      const existingEdgeIndex = edges.findIndex(
+        e => e.target === connection.target && e.targetHandle === connection.targetHandle
+      );
+      
+      let updatedEdges = edges;
+      if (existingEdgeIndex !== -1) {
+        updatedEdges = edges.filter((_, i) => i !== existingEdgeIndex);
+      }
+      
       // 创建新边配置
       const newEdge: Edge = {
         id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
@@ -83,7 +93,7 @@ export default function AppLayout() {
       };
       
       // 使用 React Flow 的 addEdge 处理
-      const updatedEdges = addEdge(newEdge, edges);
+      updatedEdges = addEdge(newEdge, updatedEdges);
       dispatch(setEdges(updatedEdges));
       
       // 同时更新 Redux store
