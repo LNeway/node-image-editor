@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPreviewTexture, setPreviewSize } from '../store/uiSlice';
 import { RootState } from '../store';

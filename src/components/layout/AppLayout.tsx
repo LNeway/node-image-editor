@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addEdge, applyNodeChanges, applyEdgeChanges, Node, Edge, OnNodesChange, OnEdgesChange, OnConnect } from 'reactflow';
-import { addNode, addEdge as addGraphEdge, setNodes, setEdges } from '../../store/graphSlice';
-import { selectNode } from '../../store/uiSlice';
+import { addNode, setNodes, setEdges, removeEdge as removeGraphEdge } from '../../store/graphSlice';
+import { selectNode, selectEdge } from '../../store/uiSlice';
 import { RootState } from '../../store';
 import TopToolbar from '../layout/TopToolbar';
 import NodeLibrary from '../node-library/NodeLibrary';
@@ -21,6 +21,13 @@ export default function AppLayout() {
   const nodes = useSelector((state: RootState) => state.graph.nodes);
   const edges = useSelector((state: RootState) => state.graph.edges);
   const selectedNodeId = useSelector((state: RootState) => state.ui.selectedNodeId);
+  const selectedEdgeId = useSelector((state: RootState) => state.ui.selectedEdgeId);
+  
+  // 为边添加 selected 属性以支持视觉反馈
+  const edgesWithSelection = edges.map(edge => ({
+    ...edge,
+    selected: edge.id === selectedEdgeId,
+  }));
   
   // 执行引擎 - 从 Redux 读取数据
   useExecutionManager();
@@ -40,8 +47,22 @@ export default function AppLayout() {
     (changes) => {
       const newEdges = applyEdgeChanges(changes, edges);
       dispatch(setEdges(newEdges));
+      
+      // 处理边的选中状态变化，同步到 Redux
+      changes.forEach((change) => {
+        if (change.type === 'select' && 'selected' in change) {
+          if (change.selected) {
+            dispatch(selectEdge(change.id));
+          } else {
+            // 如果取消选中的是当前选中的边，则清除选择
+            if (change.id === selectedEdgeId) {
+              dispatch(selectEdge(null));
+            }
+          }
+        }
+      });
     },
-    [dispatch, edges]
+    [dispatch, edges, selectedEdgeId]
   );
 
   // 连接处理 - 更新到 Redux
@@ -49,24 +70,33 @@ export default function AppLayout() {
     (connection) => {
       if (!connection.source || !connection.target) return;
       
+      // Check for existing edge to same target port and remove it (replacement pattern)
+      const existingEdge = edges.find(
+        e => e.target === connection.target && e.targetHandle === connection.targetHandle
+      );
+      
       // 创建新边配置
       const newEdge: Edge = {
         id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
         source: connection.source,
         target: connection.target,
-        type: 'bezier',
+        type: 'custom',
         animated: true,
         style: { stroke: '#00b894', strokeWidth: 2 },
         sourceHandle: connection.sourceHandle,
         targetHandle: connection.targetHandle,
       };
       
-      // 使用 React Flow 的 addEdge 处理
+      // 使用 React Flow 的 addEdge 处理新边
       const updatedEdges = addEdge(newEdge, edges);
-      dispatch(setEdges(updatedEdges));
       
-      // 同时更新 Redux store
-      dispatch(addGraphEdge(newEdge));
+      // 如果存在旧边，先删除旧边
+      if (existingEdge) {
+        const finalEdges = updatedEdges.filter(e => e.id !== existingEdge.id);
+        dispatch(setEdges(finalEdges));
+      } else {
+        dispatch(setEdges(updatedEdges));
+      }
     },
     [dispatch, edges]
   );
@@ -81,7 +111,30 @@ export default function AppLayout() {
   // 画布点击取消选中 - 更新 Redux
   const handlePaneClick = useCallback(() => {
     dispatch(selectNode(null));
+    dispatch(selectEdge(null));
   }, [dispatch]);
+
+  // 边点击处理 - 更新 Redux
+  const handleEdgeClick = useCallback((_event: React.MouseEvent, edge: Edge) => {
+    console.log('[AppLayout] Edge clicked:', edge.id);
+    dispatch(selectEdge(edge.id));
+  }, [dispatch]);
+
+  // 键盘事件处理 - 删除选中的边
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedEdgeId) {
+        console.log('[AppLayout] Deleting edge:', selectedEdgeId);
+        // Remove from Redux graph state
+        dispatch(removeGraphEdge(selectedEdgeId));
+        // Clear edge selection
+        dispatch(selectEdge(null));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [dispatch, selectedEdgeId]);
 
   // 从 Redux 获取当前选中的节点
   const selectedNode = nodes.find(n => n.id === selectedNodeId);
@@ -147,11 +200,12 @@ export default function AppLayout() {
         <div className="flex-1 relative">
           <NodeCanvas
             nodes={nodes}
-            edges={edges}
+            edges={edgesWithSelection}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onNodeClick={handleNodeClick}
+            onEdgeClick={handleEdgeClick}
             onPaneClick={handlePaneClick}
           />
           

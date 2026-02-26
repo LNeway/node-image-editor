@@ -48,7 +48,7 @@ const initialState: GraphState = {
       target: 'preview_output-demo',
       sourceHandle: 'image',
       targetHandle: 'image',
-      type: 'bezier',
+      type: 'custom',
       animated: true,
       style: { stroke: '#00b894', strokeWidth: 2 },
     },

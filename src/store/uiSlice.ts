@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface UIState {
   selectedNodeId: string | null;
+  selectedEdgeId: string | null;
   canvasTransform: { x: number; y: number; zoom: number };
   isPropertiesPanelOpen: boolean;
   isHistoryPanelOpen: boolean;
@@ -13,6 +14,7 @@ export interface UIState {
 
 const initialState: UIState = {
   selectedNodeId: null,
+  selectedEdgeId: null,
   canvasTransform: { x: 0, y: 0, zoom: 1 },
   isPropertiesPanelOpen: true,
   isHistoryPanelOpen: false,
@@ -43,6 +45,9 @@ const uiSlice = createSlice({
     setSelectedNode: (state, action: PayloadAction<string | null>) => {
       state.selectedNodeId = action.payload;
     },
+    selectEdge: (state, action: PayloadAction<string | null>) => {
+      state.selectedEdgeId = action.payload;
+    },
     setPreviewTexture: (state, action: PayloadAction<any>) => {
       state.previewTexture = action.payload;
     },
@@ -59,6 +64,7 @@ export const {
   toggleHistoryPanel,
   toggleNodeLibrary,
   setSelectedNode,
+  selectEdge,
   setPreviewTexture,
   setPreviewSize,
 } = uiSlice.actions;
