@@ -82,8 +82,16 @@ export default function AppLayout() {
         targetHandle: connection.targetHandle,
       };
       
+      // 移除连接到同一目标节点+handle的现有边
+      const filteredEdges = edges.filter(
+        (edge) => !(
+          edge.target === connection.target && 
+          edge.targetHandle === connection.targetHandle
+        )
+      );
+      
       // 使用 React Flow 的 addEdge 处理
-      const updatedEdges = addEdge(newEdge, edges);
+      const updatedEdges = addEdge(newEdge, filteredEdges);
       dispatch(setEdges(updatedEdges));
       
       // 同时更新 Redux store
